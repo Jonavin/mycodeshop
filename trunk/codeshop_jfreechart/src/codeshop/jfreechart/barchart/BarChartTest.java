@@ -12,7 +12,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class BarChartTest extends TestCase {
 
 	/**
-	 * Öù×´Í¼
+	 * æŸ±çŠ¶å›¾
 	 * @throws IOException
 	 */
 	public void testBarChart() throws IOException {
@@ -23,17 +23,17 @@ public class BarChartTest extends TestCase {
 		dataset.addValue(300, "Ext JS", "Jan");
 		dataset.addValue(400, "JFreeChart", "Jan");
 		
-//		JFreeChart chart = ChartFactory.createBarChart(			//¶şÎ¬Öù×´Í¼
-		JFreeChart chart = ChartFactory.createBarChart3D(		//ÈıDÖù×´Í¼
-		    "chart",                    	//±êÌâ
-		    "num",                      	//ºáÖáÃû³Æ
-		    "type",                     	//×İÖáÃû³Æ
-		    dataset,                    	//Êı¾İ
-//		    PlotOrientation.HORIZONTAL, 	//Ê¹ÓÃºáÏòÖù×´Í¼
-		    PlotOrientation.VERTICAL,   	//Ê¹ÓÃ´¹Ö±Öù×´Í¼
-		    true,                       	//ÊÇ·ñÊ¹ÓÃlegend
-		    false,                      	//ÊÇ·ñÊ¹ÓÃtooltip
-		    false                       	//ÊÇ·ñÊ¹ÓÃurlÁ´½Ó
+//		JFreeChart chart = ChartFactory.createBarChart(			//äºŒç»´æŸ±çŠ¶å›¾
+		JFreeChart chart = ChartFactory.createBarChart3D(		//ä¸‰DæŸ±çŠ¶å›¾
+		    "chart",                    	//æ ‡é¢˜
+		    "num",                      	//æ¨ªè½´åç§°
+		    "type",                     	//çºµè½´åç§°
+		    dataset,                    	//æ•°æ®
+//		    PlotOrientation.HORIZONTAL, 	//ä½¿ç”¨æ¨ªå‘æŸ±çŠ¶å›¾
+		    PlotOrientation.VERTICAL,   	//ä½¿ç”¨å‚ç›´æŸ±çŠ¶å›¾
+		    true,                       	//æ˜¯å¦ä½¿ç”¨legend
+		    false,                      	//æ˜¯å¦ä½¿ç”¨tooltip
+		    false                       	//æ˜¯å¦ä½¿ç”¨urlé“¾æ¥
 		);
 		
 		FileOutputStream fos = null;
@@ -45,7 +45,7 @@ public class BarChartTest extends TestCase {
 	
 	
 	/**
-	 * ·Ö×éÖù×´Í¼
+	 * åˆ†ç»„æŸ±çŠ¶å›¾
 	 * @throws IOException
 	 */
 	public void testBarChartGroup() throws IOException {
@@ -60,17 +60,17 @@ public class BarChartTest extends TestCase {
 		dataset.addValue(340, "Ext JS", "Fer");
 		dataset.addValue(130, "JFreeChart", "Fer");
 		
-//		JFreeChart chart = ChartFactory.createBarChart(			//¶şÎ¬Öù×´Í¼
-		JFreeChart chart = ChartFactory.createBarChart3D(		//ÈıDÖù×´Í¼
-		    "chart",                    	//±êÌâ
-		    "num",                      	//ºáÖáÃû³Æ
-		    "type",                     	//×İÖáÃû³Æ
-		    dataset,                    	//Êı¾İ
-//		    PlotOrientation.HORIZONTAL, 	//Ê¹ÓÃºáÏòÖù×´Í¼
-		    PlotOrientation.VERTICAL,   	//Ê¹ÓÃ´¹Ö±Öù×´Í¼
-		    true,                       	//ÊÇ·ñÊ¹ÓÃlegend
-		    false,                      	//ÊÇ·ñÊ¹ÓÃtooltip
-		    false                       	//ÊÇ·ñÊ¹ÓÃurlÁ´½Ó
+//		JFreeChart chart = ChartFactory.createBarChart(			//äºŒç»´æŸ±çŠ¶å›¾
+		JFreeChart chart = ChartFactory.createBarChart3D(		//ä¸‰DæŸ±çŠ¶å›¾
+		    "chart",                    	//æ ‡é¢˜
+		    "num",                      	//æ¨ªè½´åç§°
+		    "type",                     	//çºµè½´åç§°
+		    dataset,                    	//æ•°æ®
+//		    PlotOrientation.HORIZONTAL, 	//ä½¿ç”¨æ¨ªå‘æŸ±çŠ¶å›¾
+		    PlotOrientation.VERTICAL,   	//ä½¿ç”¨å‚ç›´æŸ±çŠ¶å›¾
+		    true,                       	//æ˜¯å¦ä½¿ç”¨legend
+		    false,                      	//æ˜¯å¦ä½¿ç”¨tooltip
+		    false                       	//æ˜¯å¦ä½¿ç”¨urlé“¾æ¥
 		);
 		
 		FileOutputStream fos = null;

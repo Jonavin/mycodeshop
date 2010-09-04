@@ -20,7 +20,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class LineChartTest extends TestCase {
 
 	/**
-	 * ÕÛÏßÍ¼
+	 * æŠ˜çº¿å›¾
 	 * @throws IOException
 	 */
 	public void testLineChart() throws IOException {
@@ -32,15 +32,15 @@ public class LineChartTest extends TestCase {
 		dataset.addValue(100, "Jan", "JFreeChart");
 		
 		JFreeChart chart = ChartFactory.createLineChart(
-		    "chart",                    // ±êÌâ
-		    "num",                      // ºá×ø±ê
-		    "type",                     // ×İ×ø±ê
-		    dataset,                    // Êı¾İ
-		    PlotOrientation.VERTICAL,   // ÊúÖ±Í¼±í
-//		    PlotOrientation.HORIZONTAL, // ºáÏòÍ¼±í
-		    true,                       // ÊÇ·ñÏÔÊ¾legend
-		    false,                      // ÊÇ·ñÏÔÊ¾tooltip
-		    false                       // ÊÇ·ñÊ¹ÓÃurlÁ´½Ó
+		    "chart",                    // æ ‡é¢˜
+		    "num",                      // æ¨ªåæ ‡
+		    "type",                     // çºµåæ ‡
+		    dataset,                    // æ•°æ®
+		    PlotOrientation.VERTICAL,   // ç«–ç›´å›¾è¡¨
+//		    PlotOrientation.HORIZONTAL, // æ¨ªå‘å›¾è¡¨
+		    true,                       // æ˜¯å¦æ˜¾ç¤ºlegend
+		    false,                      // æ˜¯å¦æ˜¾ç¤ºtooltip
+		    false                       // æ˜¯å¦ä½¿ç”¨urlé“¾æ¥
 		);
 		
 		FileOutputStream fos = null;
@@ -55,7 +55,7 @@ public class LineChartTest extends TestCase {
 	
 	
 	/**
-	 * ¶àÖØÕÛÏßÍ¼ÓëÉèÖÃÕÛÏßÑùÊ½
+	 * å¤šé‡æŠ˜çº¿å›¾ä¸è®¾ç½®æŠ˜çº¿æ ·å¼
 	 * @throws IOException
 	 */
 	public void testLineChartGroup() throws IOException {
@@ -71,31 +71,31 @@ public class LineChartTest extends TestCase {
 		dataset.addValue(40, "Fer", "JFreeChart");
 		
 		JFreeChart chart = ChartFactory.createLineChart(
-		    "chart",                    // ±êÌâ
-		    "num",                      // ºá×ø±ê
-		    "type",                     // ×İ×ø±ê
-		    dataset,                    // Êı¾İ
-		    PlotOrientation.VERTICAL,   // ÊúÖ±Í¼±í
-//		    PlotOrientation.HORIZONTAL, // ºáÏòÍ¼±í
-		    true,                       // ÊÇ·ñÏÔÊ¾legend
-		    false,                      // ÊÇ·ñÏÔÊ¾tooltip
-		    false                       // ÊÇ·ñÊ¹ÓÃurlÁ´½Ó
+		    "chart",                    // æ ‡é¢˜
+		    "num",                      // æ¨ªåæ ‡
+		    "type",                     // çºµåæ ‡
+		    dataset,                    // æ•°æ®
+		    PlotOrientation.VERTICAL,   // ç«–ç›´å›¾è¡¨
+//		    PlotOrientation.HORIZONTAL, // æ¨ªå‘å›¾è¡¨
+		    true,                       // æ˜¯å¦æ˜¾ç¤ºlegend
+		    false,                      // æ˜¯å¦æ˜¾ç¤ºtooltip
+		    false                       // æ˜¯å¦ä½¿ç”¨urlé“¾æ¥
 		);
 		
 		CategoryPlot plot = (CategoryPlot)chart.getPlot();
 //		LineRenderer3D renderer = new LineRenderer3D();
 		LineAndShapeRenderer renderer = new LineAndShapeRenderer(); 
 		
-		//ÉèÖÃ½ÚµãµÄÑùÊ½
+		//è®¾ç½®èŠ‚ç‚¹çš„æ ·å¼
 //		renderer.setShapesVisible(true);
-		renderer.setBaseShapesVisible(true);		//Deprecation since 1.0.6£¬ÏÂÍ¬£¨¶à¼ÓÁËBase£©
+		renderer.setBaseShapesVisible(true);		//Deprecation since 1.0.6ï¼Œä¸‹åŒï¼ˆå¤šåŠ äº†Baseï¼‰
 		renderer.setBaseShape(new Ellipse2D.Double(-2, -2, 4, 4));
 		        
-		//ÏÔÊ¾ÊıÖµ
+		//æ˜¾ç¤ºæ•°å€¼
 		renderer.setBaseItemLabelsVisible(true);
 		renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
 		        
-		//ÏÔÊ¾ĞéÏß
+		//æ˜¾ç¤ºè™šçº¿
 		renderer.setBaseStroke(new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
 		        BasicStroke.JOIN_MITER, 10.0f, new float[] {10.0f}, 0.0f));		
 		
@@ -110,8 +110,6 @@ public class LineChartTest extends TestCase {
 		}
 		
 	}
-	
-	
 	
 	
 }

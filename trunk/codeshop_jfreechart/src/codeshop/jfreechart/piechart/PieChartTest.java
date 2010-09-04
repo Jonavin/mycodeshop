@@ -2,9 +2,7 @@ package codeshop.jfreechart.piechart;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import junit.framework.TestCase;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -16,7 +14,7 @@ import org.jfree.util.TableOrder;
 public class PieChartTest extends TestCase {
 	
 	/**
-	 * ±ı×´Í¼
+	 * é¥¼çŠ¶å›¾
 	 * @throws IOException
 	 */
 	public void testPieChart() throws IOException {
@@ -27,13 +25,13 @@ public class PieChartTest extends TestCase {
 		dataset.setValue("Ext JS", 300);
 		dataset.setValue("JFreeChart", 100);
 		
-		JFreeChart chart = ChartFactory.createPieChart(			//¶şÎ¬±ı×´Í¼
-//		JFreeChart chart = ChartFactory.createPieChart3D(		//ÈıD±ı×´Í¼
-		    "chart",    	//±êÌâ
-		    dataset,    	//Êı¾İ
-		    true,       	//ÊÇ·ñÊ¹ÓÃlegend
-		    false,      	//ÊÇ·ñÊ¹ÓÃtooltip
-		    false       	//ÊÇ·ñÊ¹ÓÃurlÁ´½Ó
+		JFreeChart chart = ChartFactory.createPieChart(			//äºŒç»´é¥¼çŠ¶å›¾
+//		JFreeChart chart = ChartFactory.createPieChart3D(		//ä¸‰Dé¥¼çŠ¶å›¾
+		    "chart",    	//æ ‡é¢˜
+		    dataset,    	//æ•°æ®
+		    true,       	//æ˜¯å¦ä½¿ç”¨legend
+		    false,      	//æ˜¯å¦ä½¿ç”¨tooltip
+		    false       	//æ˜¯å¦ä½¿ç”¨urlé“¾æ¥
 		);
 		
 		FileOutputStream fos = null;
@@ -47,7 +45,7 @@ public class PieChartTest extends TestCase {
 	}
 	
 	/**
-	 * Õ¨¿ªµÄ±ı×´Í¼Óë¿ÕÖµ´¦Àí
+	 * ç‚¸å¼€çš„é¥¼çŠ¶å›¾ä¸ç©ºå€¼å¤„ç†
 	 * @throws IOException
 	 */
 	public void testPieChartPlot() throws IOException {
@@ -60,19 +58,19 @@ public class PieChartTest extends TestCase {
 		dataset.setValue("Null", null);
 		dataset.setValue("Zero", 0);
 		
-		JFreeChart chart = ChartFactory.createPieChart(			//¶şÎ¬±ı×´Í¼
-//		JFreeChart chart = ChartFactory.createPieChart3D(		//ÈıD±ı×´Í¼
-		    "chart",    	//±êÌâ
-		    dataset,    	//Êı¾İ
-		    true,       	//ÊÇ·ñÊ¹ÓÃlegend
-		    false,      	//ÊÇ·ñÊ¹ÓÃtooltip
-		    false       	//ÊÇ·ñÊ¹ÓÃurlÁ´½Ó
+		JFreeChart chart = ChartFactory.createPieChart(			//äºŒç»´é¥¼çŠ¶å›¾
+//		JFreeChart chart = ChartFactory.createPieChart3D(		//ä¸‰Dé¥¼çŠ¶å›¾
+		    "chart",    	//æ ‡é¢˜
+		    dataset,    	//æ•°æ®
+		    true,       	//æ˜¯å¦ä½¿ç”¨legend
+		    false,      	//æ˜¯å¦ä½¿ç”¨tooltip
+		    false       	//æ˜¯å¦ä½¿ç”¨urlé“¾æ¥
 		);
 		
 		PiePlot plot = (PiePlot) chart.getPlot();
-		//ÉèÖÃÕ¨¿ªÄÄÒ»¿é
+		//è®¾ç½®ç‚¸å¼€å“ªä¸€å—
 		plot.setExplodePercent("JFreeChart", 0.3);
-		//ÉèÖÃ¿ÕÖµ²»ÏÔÊ¾
+		//è®¾ç½®ç©ºå€¼ä¸æ˜¾ç¤º
 		plot.setIgnoreZeroValues(true);
 		plot.setIgnoreNullValues(true);
 		
@@ -87,7 +85,7 @@ public class PieChartTest extends TestCase {
 	}
 	
 	/**
-	 * ¶àÖØ±ıÍ¼
+	 * å¤šé‡é¥¼å›¾
 	 * @throws IOException
 	 */
 	public void testMultiplePieChart() throws IOException {
@@ -105,7 +103,7 @@ public class PieChartTest extends TestCase {
 		JFreeChart chart = ChartFactory.createMultiplePieChart(
 		    "chart",
 		    dataset,
-		    TableOrder.BY_COLUMN, 			//°´ÁĞ·Ö¸î±ıÍ¼£¬addValueÖĞµÄµÚÈı¸ö²ÎÊı
+		    TableOrder.BY_COLUMN, 			//æŒ‰åˆ—åˆ†å‰²é¥¼å›¾ï¼ŒaddValueä¸­çš„ç¬¬ä¸‰ä¸ªå‚æ•°
 		    true,
 		    false,
 		    false
@@ -121,8 +119,6 @@ public class PieChartTest extends TestCase {
 		
 		
 	}
-	
-	
 	
 
 }
