@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="file" extends="struts-default" namespace="/struts2">
+		
+		<!-- 单文件上传 -->
+		<action name="fileUpload" class="codeshop.fileupload.struts2.FileUploadAction">
+			<result>success.jsp</result>
+		</action>
+		
+		<!-- 多文件上传 -->
+		<action name="multiFileUpload" class="codeshop.fileupload.struts2.MultiFileUploadAction">
+			<result>success.jsp</result>
+		</action>
+		
+		<action name="toFileUploadPage" class="com.opensymphony.xwork2.ActionSupport">
+			<result>fileUpload.jsp</result>
+		</action>
+		
+		<action name="toMultiFileUploadPage" class="com.opensymphony.xwork2.ActionSupport">
+			<result>multiFileUpload</result>
+		</action>
+		
+	</package>
+
+</struts>
+ 
