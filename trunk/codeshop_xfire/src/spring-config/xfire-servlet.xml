@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<import resource="classpath:org/codehaus/xfire/spring/xfire.xml"/>
+
+    <!-- 待弄明白这种用法
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/userService.ws">
+                    <ref bean="userWs"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+     -->
+    
+    <!--  配置方式 1  -->
+    <!-- 
+    <bean id="userWs" class="org.codehaus.xfire.spring.remoting.XFireExporter">
+        <property name="serviceFactory">
+            <ref bean="xfire.serviceFactory"/>
+        </property>
+        <property name="xfire">
+            <ref bean="xfire"/>
+        </property>
+        <property name="serviceBean">
+            <ref bean="userService"/>
+        </property>
+        <property name="serviceClass">
+            <value>codeshop.xfire.service.UserService</value>
+        </property>
+    </bean>
+     -->
+    
+    <!-- 配置方式 2: 抽取公共的基础Bean -->
+    
+    <bean id="baseWebService" class="org.codehaus.xfire.spring.remoting.XFireExporter" abstract="true">
+    	<property name="serviceFactory">
+    		<ref bean="xfire.serviceFactory" />
+    	</property>
+    	<property name="xfire">
+    		<ref bean="xfire" />
+    	</property>
+    </bean>
+    <bean id="userWs" parent="baseWebService">
+    	<property name="serviceBean" ref="userService" />
+    	<property name="serviceClass">
+    		<value>codeshop.xfire.service.UserService</value>
+    	</property>
+    	<property name="outHandlers">
+    		<list>
+    			<ref bean="outHeaderHandler"/>
+    		</list>
+    	</property>
+    </bean>
+    
+    <bean id="outHeaderHandler" class="codeshop.xfire.handler.OutHeaderHandler" />
+    
+</beans>
