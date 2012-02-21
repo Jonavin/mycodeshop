@@ -1,0 +1,250 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>CompPopupWindow.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets;&nbsp;<BR><BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> com.ztesoft.mobile.trunk.R;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.app.Activity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.Context;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Color;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.graphics.drawable.ColorDrawable;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.DisplayMetrics;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.Gravity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.LayoutInflater;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.View;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.ViewGroup;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.ViewParent;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.ViewGroup.LayoutParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.animation.TranslateAnimation;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.Button;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.ImageView;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.LinearLayout;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.PopupWindow;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.RelativeLayout;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.TextView;<BR><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+CompPopupWindow <FONT color=#0000ff><B>extends</B></FONT> PopupWindow 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+Context context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> View 
+parent;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+ViewGroup mainLayout;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> String 
+title;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+Boolean towardUp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Activity 
+activity;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+View content;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>final</B></FONT> 
+<FONT color=#0000ff><B>int</B></FONT> MENU <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> OTHER 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+x;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>int</B></FONT> backGroup;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造函数<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+parent<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+mainLayout<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+title<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompPopupWindow(Context context, View parent, 
+ViewGroup 
+mainLayout,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+title,<FONT color=#0000ff><B>int</B></FONT> ...backGroup) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ColorDrawable 
+dw <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ColorDrawable(Color.TRANSPARENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.setBackgroundDrawable(dw);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.context <FONT color=#333399>=</FONT> 
+context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.parent <FONT color=#333399>=</FONT> 
+parent;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.mainLayout <FONT color=#333399>=</FONT> 
+mainLayout;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.title <FONT color=#333399>=</FONT> 
+title;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(backGroup <FONT color=#333399>!=</FONT>null <FONT 
+color=#333399>&amp;&amp;</FONT> backGroup.length <FONT color=#333399>&gt;</FONT> 
+<FONT 
+color=#6e00aa>0</FONT>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.backGroup <FONT color=#333399>=</FONT> 
+backGroup[<FONT 
+color=#6e00aa>0</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initPopupWindow();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+初始化布局<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> ViewGroup 
+initPopupWindow(){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activity 
+<FONT color=#333399>=</FONT> 
+(Activity)context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+当前设备的屏幕大小<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DisplayMetrics 
+dm <FONT color=#333399>=</FONT> 
+getScreenSize(activity);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> width <FONT color=#333399>=</FONT> 
+dm.widthPixels;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> height <FONT 
+color=#333399>=</FONT>dm.heightPixels 
+;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+入口控件的位置<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] pos<FONT 
+color=#333399>=</FONT>getParentViewLocationOnScreen();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+入口控件的大小<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] size<FONT 
+color=#333399>=</FONT>getParentViewSize();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> enterWidth<FONT color=#333399>=</FONT>size[<FONT 
+color=#6e00aa>0</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> enterHeight<FONT 
+color=#333399>=</FONT>size[<FONT 
+color=#6e00aa>1</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+设置popwindow的大小、位置及箭头的位置<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LayoutInflater 
+inflate <FONT color=#333399>=</FONT> 
+(LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+mainLayout1<FONT color=#333399>=</FONT>(LinearLayout) 
+inflate.inflate(R.layout.comppopwindow, 
+null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+cacheParent<FONT color=#333399>=</FONT>(LinearLayout) 
+mainLayout1.findViewById(R.id.cacheParent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+cacheChild<FONT color=#333399>=</FONT>(LinearLayout) 
+mainLayout1.findViewById(R.id.cacheChild);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ImageView 
+triangleUp<FONT color=#333399>=</FONT>(ImageView) 
+mainLayout1.findViewById(R.id.folder_triangle_up);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ImageView 
+triangleDown<FONT color=#333399>=</FONT>(ImageView) 
+mainLayout1.findViewById(R.id.folder_triangle_down);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(backGroup <FONT color=#333399>!=</FONT> <FONT 
+color=#6e00aa>0</FONT>){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mainLayout1.setBackgroundColor(Color.TRANSPARENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cacheParent.setBackgroundColor(Color.TRANSPARENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cacheChild.setBackgroundColor(Color.TRANSPARENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleUp.setBackgroundColor(Color.TRANSPARENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleDown.setBackgroundColor(Color.TRANSPARENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(pos[<FONT color=#6e00aa>1</FONT>]<FONT 
+color=#333399>&gt;</FONT><FONT color=#333399>=</FONT>height<FONT 
+color=#333399>/</FONT><FONT color=#6e00aa>2</FONT>){<FONT 
+color=#008000>//入口的按钮在下面</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> cacheParentHeight<FONT 
+color=#333399>=</FONT>pos[<FONT 
+color=#6e00aa>1</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cacheParent.setLayoutParams(<FONT 
+color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 
+LayoutParams.WRAP_CONTENT));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.setHeight(LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+ll_params<FONT color=#333399>=</FONT><FONT color=#0000ff><B>new</B></FONT> 
+android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 
+LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ll_params.setMargins(pos[<FONT 
+color=#6e00aa>0</FONT>]<FONT color=#333399>+</FONT>enterWidth<FONT 
+color=#333399>/</FONT><FONT color=#6e00aa>2</FONT>, <FONT 
+color=#6e00aa>0</FONT>, <FONT color=#6e00aa>0</FONT>, <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleDown.setLayoutParams(ll_params);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleDown.setVisibility(ImageView.VISIBLE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleUp.setVisibility(ImageView.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;towardUp<FONT 
+color=#333399>=</FONT>true;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<FONT 
+color=#0000ff><B>else</B></FONT>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//入口按钮在上面</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> cacheParentHeight<FONT 
+color=#333399>=</FONT>height<FONT color=#333399>-</FONT>pos[<FONT 
+color=#6e00aa>1</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cacheParent.setLayoutParams(<FONT 
+color=#0000ff><B>new</B></FONT> 
+RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, 
+LayoutParams.WRAP_CONTENT));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.setHeight(LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+ll_params<FONT color=#333399>=</FONT><FONT color=#0000ff><B>new</B></FONT> 
+android.widget.LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, 
+LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ll_params.setMargins(pos[<FONT 
+color=#6e00aa>0</FONT>]<FONT color=#333399>+</FONT>enterWidth<FONT 
+color=#333399>/</FONT><FONT color=#6e00aa>2</FONT>, <FONT 
+color=#6e00aa>0</FONT>, <FONT color=#6e00aa>0</FONT>, <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleUp.setLayoutParams(ll_params);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleUp.setVisibility(ImageView.VISIBLE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleDown.setVisibility(ImageView.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;towardUp<FONT 
+color=#333399>=</FONT>true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(backGroup <FONT color=#333399>!=</FONT> <FONT 
+color=#6e00aa>0</FONT>){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleDown.setVisibility(ImageView.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;triangleUp.setVisibility(ImageView.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.setWidth(width<FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>10</FONT>);<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mainLayout.setPadding(10, 
+0, 10, 
+0);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cacheChild.addView(mainLayout, 
+<FONT color=#0000ff><B>new</B></FONT> 
+android.widget.LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, 
+LayoutParams.WRAP_CONTENT));<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+headText<FONT color=#333399>=</FONT>(TextView) 
+mainLayout1.findViewById(R.id.folder_title);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;headText.setText(title);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mainLayout1.removeAllViews();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;content<FONT 
+color=#333399>=</FONT>cacheParent;<BR><BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+cacheParent;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+得到屏幕大小尺寸<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+activity<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> DisplayMetrics getScreenSize(Activity 
+activity){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DisplayMetrics dm 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DisplayMetrics();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activity.getWindowManager().getDefaultDisplay().getMetrics(dm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+dm;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 得到父节点的位置0为X 
+1为Y<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+view<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>int</B></FONT>[] 
+getParentViewLocationOnScreen(){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] pos<FONT color=#333399>=</FONT><FONT 
+color=#0000ff><B>new</B></FONT> <FONT color=#0000ff><B>int</B></FONT>[<FONT 
+color=#6e00aa>2</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parent.getLocationOnScreen(pos);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+pos;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+得到父节点的大小<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>int</B></FONT>[] 
+getParentViewSize(){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] pos<FONT color=#333399>=</FONT><FONT 
+color=#0000ff><B>new</B></FONT> <FONT color=#0000ff><B>int</B></FONT>[<FONT 
+color=#6e00aa>2</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pos[<FONT 
+color=#6e00aa>0</FONT>]<FONT 
+color=#333399>=</FONT>parent.getWidth();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pos[<FONT 
+color=#6e00aa>1</FONT>]<FONT 
+color=#333399>=</FONT>parent.getHeight();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+pos;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+展示<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+show(){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.setContentView(content);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setAnimationStyle(R.anim.pop_center);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setOutsideTouchable(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setFocusable(false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;update();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(towardUp){<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateAnimation 
+tr = 
+new</FONT>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.showAsDropDown(parent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<FONT 
+color=#0000ff><B>else</B></FONT>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.showAsDropDown(parent,<FONT 
+color=#6e00aa>0</FONT>,<FONT color=#333399>-</FONT>getHeight()<FONT 
+color=#333399>-</FONT>parent.getHeight());<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.showAtLocation(parent, 
+Gravity.TOP, 0, 
+0);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+设置展示窗口的大小<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+width<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+height<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+showBySize(<FONT color=#0000ff><B>int</B></FONT> width,<FONT 
+color=#0000ff><B>int</B></FONT> 
+height){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.setContentView(content);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setAnimationStyle(R.anim.pop_center);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setOutsideTouchable(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setFocusable(false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setWidth(width);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setHeight(height);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;update();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(towardUp){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.showAsDropDown(parent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<FONT 
+color=#0000ff><B>else</B></FONT>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.showAsDropDown(parent, <FONT 
+color=#6e00aa>0</FONT>, <FONT color=#333399>-</FONT>getHeight()<FONT 
+color=#333399>-</FONT>parent.getHeight());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> View getParent() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+parent;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>}</DIV></CODE></BODY></HTML>

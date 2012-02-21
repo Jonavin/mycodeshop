@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>CompTouchView.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.FileNotFoundException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.lang.ref.SoftReference;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util.ViewUtil;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.app.Activity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.Context;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.Intent;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.res.Resources;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Bitmap;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.BitmapFactory;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Canvas;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Color;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Matrix;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.PixelFormat;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.PointF;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.graphics.drawable.BitmapDrawable;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.drawable.Drawable;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.net.Uri;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Bundle;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.provider.MediaStore;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.AttributeSet;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.DisplayMetrics;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.FloatMath;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.Log;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.MotionEvent;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.View;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.View.OnTouchListener;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.ImageView;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.LinearLayout;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.ImageView.ScaleType;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.widget.LinearLayout.LayoutParams;<BR><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+CompTouchView <FONT color=#0000ff><B>extends</B></FONT> LinearLayout <FONT 
+color=#0000ff><B>implements</B></FONT> 
+OnTouchListener{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> ImageView 
+photoBrowse;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Bitmap bm;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+displayWidth <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+displayHeight <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+手势操作变量！</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> String TAG <FONT color=#333399>=</FONT> 
+<FONT color=#ff00bf>"Touch"</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;Matrix matrix 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Matrix();<BR>&nbsp;&nbsp;&nbsp;&nbsp;Matrix savedMatrix <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Matrix();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;PointF start <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+PointF();<BR>&nbsp;&nbsp;&nbsp;&nbsp;PointF mid <FONT color=#333399>=</FONT> 
+<FONT color=#0000ff><B>new</B></FONT> PointF();<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> oldDist <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1f</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// We 
+can be in one of these 3 states</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>int</B></FONT> NONE <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>int</B></FONT> DRAG <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>int</B></FONT> ZOOM <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> mode <FONT color=#333399>=</FONT> 
+NONE;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>int</B></FONT> 
+imageWidth;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>int</B></FONT> 
+imageHeight;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> SoftReference<FONT 
+color=#333399>&lt;</FONT>Bitmap<FONT color=#333399>&gt;</FONT> sr 
+;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> Context 
+context;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>float</B></FONT> 
+x1,y1;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>public</B></FONT> 
+CompTouchView(Context context) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.context <FONT color=#333399>=</FONT> 
+context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompTouchView(Context context, AttributeSet 
+attrs) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context, 
+attrs);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.context <FONT color=#333399>=</FONT> 
+context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setBackgroundColor(Color.WHITE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+initTouchView(Bitmap bm){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sr 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+SoftReference<FONT color=#333399>&lt;</FONT>Bitmap<FONT 
+color=#333399>&gt;</FONT>(bm);<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.bm = 
+bm;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photoBrowse <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ImageView(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photoBrowse.setScaleType(ScaleType.CENTER_CROP);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/* 取得屏幕宽高 
+*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+取得屏幕分辨北率</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DisplayMetrics 
+dm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DisplayMetrics();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayWidth 
+<FONT color=#333399>=</FONT> 
+dm.widthPixels;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;displayHeight 
+<FONT color=#333399>=</FONT> 
+dm.heightPixels;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+计算当前图片的宽和高</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photoBrowse.setImageBitmap(sr.get());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;imageWidth 
+<FONT color=#333399>=</FONT> 
+sr.get().getWidth();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;imageHeight 
+<FONT color=#333399>=</FONT> 
+sr.get().getHeight();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photoBrowse.setOnTouchListener(<FONT 
+color=#0000ff><B>this</B></FONT>);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x1<FONT 
+color=#333399>=</FONT>(displayWidth<FONT color=#333399>-</FONT>imageWidth)<FONT 
+color=#333399>/</FONT><FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y1<FONT 
+color=#333399>=</FONT>(displayHeight<FONT 
+color=#333399>-</FONT>imageHeight)<FONT color=#333399>/</FONT><FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;removeAllViews();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addView(photoBrowse, 
+<FONT color=#0000ff><B>new</B></FONT> 
+LayoutParams(ViewUtil.getDisplayMetrics(context).widthPixels, 
+ViewUtil.getDisplayMetrics(context).heightPixels));<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+onTouch(View v, MotionEvent event) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// TODO 
+Auto-generated method 
+stub</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ImageView view 
+<FONT color=#333399>=</FONT> (ImageView) 
+v;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view.setScaleType(ScaleType.MATRIX);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>switch</B></FONT> (event.getAction() <FONT 
+color=#333399>&amp;</FONT> MotionEvent.ACTION_MASK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_DOWN<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;savedMatrix.set(matrix);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+設置初始點位置</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;start.set(event.getX(), 
+event.getY());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mode 
+<FONT color=#333399>=</FONT> 
+DRAG;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_POINTER_DOWN<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;oldDist 
+<FONT color=#333399>=</FONT> 
+spacing(event);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (oldDist <FONT color=#333399>&gt;</FONT> <FONT 
+color=#6e00aa>10f</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;savedMatrix.set(matrix);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;midPoint(mid, 
+event);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mode 
+<FONT color=#333399>=</FONT> 
+ZOOM;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_UP<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_POINTER_UP<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mode 
+<FONT color=#333399>=</FONT> 
+NONE;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.d(TAG, 
+<FONT 
+color=#ff00bf>"mode=NONE"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_MOVE<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (mode <FONT color=#333399>==</FONT> DRAG) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+...</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matrix.set(savedMatrix);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matrix.postTranslate(event.getX() 
+<FONT color=#333399>-</FONT> start.x, 
+event.getY()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>-</FONT> 
+start.y);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(mode <FONT color=#333399>==</FONT> ZOOM) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> newDist <FONT color=#333399>=</FONT> 
+spacing(event);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.d(TAG, 
+<FONT color=#ff00bf>"newDist="</FONT> <FONT color=#333399>+</FONT> 
+newDist);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (newDist <FONT color=#333399>&gt;</FONT> <FONT 
+color=#6e00aa>10f</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matrix.set(savedMatrix);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> scale <FONT color=#333399>=</FONT> newDist 
+<FONT color=#333399>/</FONT> 
+oldDist;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matrix.postScale(scale, 
+scale, mid.x, 
+mid.y);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view.setImageMatrix(matrix);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> true; <FONT color=#008000>// indicate event 
+was 
+handled</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/** Determine the space between the first two fingers 
+*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>float</B></FONT> spacing(MotionEvent event) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> x <FONT color=#333399>=</FONT> 
+event.getX(<FONT color=#6e00aa>0</FONT>) <FONT color=#333399>-</FONT> 
+event.getX(<FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> y <FONT color=#333399>=</FONT> 
+event.getY(<FONT color=#6e00aa>0</FONT>) <FONT color=#333399>-</FONT> 
+event.getY(<FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> FloatMath.sqrt(x <FONT color=#333399>*</FONT> 
+x <FONT color=#333399>+</FONT> y <FONT color=#333399>*</FONT> 
+y);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/** Calculate the mid point of the first two fingers 
+*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> midPoint(PointF point, MotionEvent event) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> x <FONT color=#333399>=</FONT> 
+event.getX(<FONT color=#6e00aa>0</FONT>) <FONT color=#333399>+</FONT> 
+event.getX(<FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> y <FONT color=#333399>=</FONT> 
+event.getY(<FONT color=#6e00aa>0</FONT>) <FONT color=#333399>+</FONT> 
+event.getY(<FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;point.set(x 
+<FONT color=#333399>/</FONT> <FONT color=#6e00aa>2</FONT>, y <FONT 
+color=#333399>/</FONT> <FONT 
+color=#6e00aa>2</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+当切换的时候回收资源<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>protected</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onDestroy(Bitmap bm) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bm.recycle();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bm 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+当切换的时候回收资源<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>protected</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onDestroy() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bm.recycle();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bm 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setImageResource(Integer resId) {<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bitmap bit 
+=bm;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Resources 
+res<FONT color=#333399>=</FONT> 
+context.getResources();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bitmap 
+bitmap <FONT color=#333399>=</FONT> BitmapFactory.decodeResource(res, 
+resId);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initTouchView(bitmap);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matrix 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Matrix();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photoBrowse.setImageResource(resId);<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( bit != 
+null&amp;&amp;!bit.isRecycled())</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onDestroy(bit);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setImageBitmap(Bitmap bitmap) {<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bitmap bit 
+=bm;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initTouchView(bitmap);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matrix 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Matrix();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photoBrowse.setImageBitmap(bitmap);<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( bit != 
+null&amp;&amp;!bit.isRecycled())</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onDestroy(bit);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setImageDrawable(Drawable drawable) {<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bitmap bit 
+=bm;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initTouchView(drawableToBitmap(drawable));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;matrix 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Matrix();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;photoBrowse.setImageDrawable(drawable);<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( bit != 
+null&amp;&amp;!bit.isRecycled())</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onDestroy(bit);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+将Drawable转化为Bitmap<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+Bitmap drawableToBitmap(Drawable drawable) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> width <FONT color=#333399>=</FONT> 
+drawable.getIntrinsicWidth();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> height <FONT color=#333399>=</FONT> 
+drawable.getIntrinsicHeight();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bitmap 
+bitmap <FONT color=#333399>=</FONT> Bitmap.createBitmap(width, height, 
+drawable<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.getOpacity() 
+<FONT color=#333399>!=</FONT> PixelFormat.OPAQUE <FONT color=#333399>?</FONT> 
+Bitmap.Config.ARGB_8888<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>:</FONT> 
+Bitmap.Config.RGB_565);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Canvas 
+canvas <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Canvas(bitmap);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawable.setBounds(<FONT 
+color=#6e00aa>0</FONT>, <FONT color=#6e00aa>0</FONT>, width, 
+height);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawable.draw(canvas);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+bitmap;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>}</DIV></CODE></BODY></HTML>

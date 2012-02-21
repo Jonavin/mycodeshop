@@ -1,0 +1,735 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>KeywordsFlow.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.LinkedList;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.Random;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.Vector;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> com.ztesoft.mobile.trunk.R;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.Context;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Paint;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.drawable.Drawable;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.AttributeSet;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.TypedValue;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.Gravity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.View;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.ViewTreeObserver.OnGlobalLayoutListener;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.animation.AlphaAnimation;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.animation.Animation;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.animation.Animation.AnimationListener;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.animation.AnimationSet;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.animation.AnimationUtils;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.animation.Interpolator;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.animation.ScaleAnimation;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.animation.TranslateAnimation;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.FrameLayout;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.TextView;<BR><BR><FONT 
+color=#008000>/**<BR>&nbsp;* 注意，出包时出混淆包，应在proguard.cfg中加入：&lt;br/&gt; -keep 
+public class * extends<BR>&nbsp;* 
+android.widget.FrameLayout&lt;br/&gt;<BR>&nbsp;*&nbsp;<BR>&nbsp;* 
+@author&nbsp;<BR>&nbsp;* @version Time：2011-12-26 
+下午03:34:16<BR>&nbsp;*/</FONT><BR><FONT color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>class</B></FONT> KeywordsFlow <FONT 
+color=#0000ff><B>extends</B></FONT> FrameLayout <FONT 
+color=#0000ff><B>implements</B></FONT> OnGlobalLayoutListener 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>int</B></FONT> IDX_X <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+IDX_Y <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+IDX_TXT_LENGTH <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+IDX_DIS_Y <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>3</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+由外至内的动画。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+ANIMATION_IN <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+由内至外的动画。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+ANIMATION_OUT <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+位移动画类型：从外围移动到坐标点。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+OUTSIDE_TO_LOCATION <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+位移动画类型：从坐标点移动到外围。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+LOCATION_TO_OUTSIDE <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+位移动画类型：从中心点移动到坐标点。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+CENTER_TO_LOCATION <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>3</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+位移动画类型：从坐标点移动到中心点。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+LOCATION_TO_CENTER <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>4</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>long</B></FONT> 
+ANIM_DURATION <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>800l</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+MAX <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>6</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+TEXT_SIZE_MAX <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>18</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+TEXT_SIZE_MIN <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>14</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> OnClickListener 
+itemClickListener;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+Interpolator interpolator;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+AlphaAnimation animAlpha2Opaque;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+AlphaAnimation animAlpha2Transparent;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+ScaleAnimation animScaleLarge2Normal, 
+animScaleNormal2Large,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animScaleZero2Normal, 
+animScaleNormal2Zero;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+存储显示的关键字。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Vector<FONT 
+color=#333399>&lt;</FONT>String<FONT color=#333399>&gt;</FONT> 
+vecKeywords;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> width, 
+height;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+go2Show()中被赋值为true，标识开发人员触发其开始动画显示。&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+本标识的作用是防止在填充keywrods未完成的过程中获取到width和height后提前启动动画。&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+在show()方法中其被赋值为false。&lt;br/&gt; 真正能够动画显示的另一必要条件：width 和 
+height不为0。&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+enableShow;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+Random random;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @see 
+ANIMATION_IN<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @see 
+ANIMATION_OUT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @see 
+OUTSIDE_TO_LOCATION<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @see 
+LOCATION_TO_OUTSIDE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @see 
+LOCATION_TO_CENTER<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @see 
+CENTER_TO_LOCATION<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+txtAnimInType, txtAnimOutType;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/** 最近一次启动动画显示的时间。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>long</B></FONT> 
+lastStartAnimationTime;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>/** 
+动画运行时间。 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>long</B></FONT> 
+animDuration;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> KeywordsFlow(Context context, AttributeSet 
+attrs, <FONT color=#0000ff><B>int</B></FONT> defStyle) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context, attrs, 
+defStyle);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> KeywordsFlow(Context context, AttributeSet 
+attrs) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context, 
+attrs);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> KeywordsFlow(Context context) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+init() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastStartAnimationTime 
+<FONT color=#333399>=</FONT> 
+0l;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animDuration <FONT 
+color=#333399>=</FONT> 
+ANIM_DURATION;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;random <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Random();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vecKeywords <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> Vector<FONT 
+color=#333399>&lt;</FONT>String<FONT 
+color=#333399>&gt;</FONT>(MAX);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getViewTreeObserver().addOnGlobalLayoutListener(<FONT 
+color=#0000ff><B>this</B></FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interpolator 
+<FONT color=#333399>=</FONT> 
+AnimationUtils.loadInterpolator(getContext(),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;android.R.anim.decelerate_interpolator);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animAlpha2Opaque 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+AlphaAnimation(<FONT color=#6e00aa>0</FONT>.0f, <FONT 
+color=#6e00aa>1</FONT>.0f);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animAlpha2Transparent 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+AlphaAnimation(<FONT color=#6e00aa>1</FONT>.0f, <FONT 
+color=#6e00aa>0</FONT>.0f);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animScaleLarge2Normal 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ScaleAnimation(<FONT color=#6e00aa>2</FONT>, <FONT color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>2</FONT>, <FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animScaleNormal2Large 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ScaleAnimation(<FONT color=#6e00aa>1</FONT>, <FONT color=#6e00aa>2</FONT>, <FONT 
+color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>2</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animScaleZero2Normal 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ScaleAnimation(<FONT color=#6e00aa>0</FONT>, <FONT color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>0</FONT>, <FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animScaleNormal2Zero 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ScaleAnimation(<FONT color=#6e00aa>1</FONT>, <FONT color=#6e00aa>0</FONT>, <FONT 
+color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>long</B></FONT> 
+getDuration() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+animDuration;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setDuration(<FONT color=#0000ff><B>long</B></FONT> duration) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animDuration <FONT 
+color=#333399>=</FONT> 
+duration;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+feedKeyword(String keyword) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>boolean</B></FONT> result <FONT color=#333399>=</FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (vecKeywords.size() <FONT 
+color=#333399>&lt;</FONT> MAX) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result 
+<FONT color=#333399>=</FONT> 
+vecKeywords.add(keyword);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 开始动画显示。&lt;br/&gt; 
+之前已经存在的TextView将会显示退出动画。&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return 
+正常显示动画返回true；反之为false。返回false原因如下：&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+1.时间上不允许，受lastStartAnimationTime的制约；&lt;br/&gt; 
+2.未获取到width和height的值。&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+go2Show(<FONT color=#0000ff><B>int</B></FONT> animType) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (System.currentTimeMillis() <FONT 
+color=#333399>-</FONT> lastStartAnimationTime <FONT color=#333399>&gt;</FONT> 
+animDuration) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enableShow 
+<FONT color=#333399>=</FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (animType <FONT color=#333399>==</FONT> 
+ANIMATION_IN) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtAnimInType 
+<FONT color=#333399>=</FONT> 
+OUTSIDE_TO_LOCATION;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtAnimOutType 
+<FONT color=#333399>=</FONT> 
+LOCATION_TO_CENTER;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(animType <FONT color=#333399>==</FONT> ANIMATION_OUT) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtAnimInType 
+<FONT color=#333399>=</FONT> 
+CENTER_TO_LOCATION;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtAnimOutType 
+<FONT color=#333399>=</FONT> 
+LOCATION_TO_OUTSIDE;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;disapper();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>boolean</B></FONT> result <FONT color=#333399>=</FONT> 
+show();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+disapper() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> size <FONT color=#333399>=</FONT> 
+getChildCount();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> size <FONT color=#333399>-</FONT> <FONT 
+color=#6e00aa>1</FONT>; i <FONT color=#333399>&gt;</FONT><FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i<FONT 
+color=#333399>--</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> TextView txt <FONT color=#333399>=</FONT> 
+(TextView) 
+getChildAt(i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (txt.getVisibility() <FONT 
+color=#333399>==</FONT> View.GONE) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;removeView(txt);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>continue</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FrameLayout.LayoutParams 
+layParams <FONT color=#333399>=</FONT> (LayoutParams) 
+txt<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.getLayoutParams();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Log.d("ANDROID_LAB", txt.getText() + " leftM=" 
++</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// layParams.leftMargin + " topM=" + 
+layParams.topMargin</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// + " width=" + 
+txt.getWidth());</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] xy <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> <FONT color=#0000ff><B>int</B></FONT>[] { 
+layParams.leftMargin, 
+layParams.topMargin,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.getWidth() 
+};<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AnimationSet 
+animSet <FONT color=#333399>=</FONT> getAnimationSet(xy, (width <FONT 
+color=#333399>&gt;&gt;</FONT> <FONT 
+color=#6e00aa>1</FONT>),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(height 
+<FONT color=#333399>&gt;&gt;</FONT> <FONT color=#6e00aa>1</FONT>), 
+txtAnimOutType);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.startAnimation(animSet);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.setAnimationListener(<FONT 
+color=#0000ff><B>new</B></FONT> AnimationListener() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onAnimationStart(Animation animation) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onAnimationRepeat(Animation animation) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onAnimationEnd(Animation animation) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setOnClickListener(null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setClickable(false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setVisibility(View.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+show() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (width <FONT color=#333399>&gt;</FONT> <FONT 
+color=#6e00aa>0</FONT> <FONT color=#333399>&amp;&amp;</FONT> height <FONT 
+color=#333399>&gt;</FONT> <FONT color=#6e00aa>0</FONT> <FONT 
+color=#333399>&amp;&amp;</FONT> vecKeywords <FONT color=#333399>!=</FONT> 
+null<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>&amp;&amp;</FONT> vecKeywords.size() <FONT 
+color=#333399>&gt;</FONT> <FONT color=#6e00aa>0</FONT> <FONT 
+color=#333399>&amp;&amp;</FONT> enableShow) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enableShow 
+<FONT color=#333399>=</FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastStartAnimationTime 
+<FONT color=#333399>=</FONT> 
+System.currentTimeMillis();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> xCenter <FONT color=#333399>=</FONT> width <FONT 
+color=#333399>&gt;&gt;</FONT> <FONT color=#6e00aa>1</FONT>, yCenter <FONT 
+color=#333399>=</FONT> height <FONT color=#333399>&gt;&gt;</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> size <FONT color=#333399>=</FONT> 
+vecKeywords.size();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> xItem <FONT color=#333399>=</FONT> width <FONT 
+color=#333399>/</FONT> size, yItem <FONT color=#333399>=</FONT> height <FONT 
+color=#333399>/</FONT> 
+size;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Log.d("ANDROID_LAB", "--------------------------width=" + width 
++</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// " height=" + height + " xItem=" + 
+xItem</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// + " yItem=" + yItem + 
+"---------------------------");</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinkedList<FONT 
+color=#333399>&lt;</FONT>Integer<FONT color=#333399>&gt;</FONT> listX <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> LinkedList<FONT 
+color=#333399>&lt;</FONT>Integer<FONT color=#333399>&gt;</FONT>(), listY <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> LinkedList<FONT 
+color=#333399>&lt;</FONT>Integer<FONT 
+color=#333399>&gt;</FONT>();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> size; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+准备随机候选数，分别对应x/y轴位置</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listX.add(i 
+<FONT color=#333399>*</FONT> 
+xItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listY.add(i 
+<FONT color=#333399>*</FONT> yItem <FONT color=#333399>+</FONT> (yItem <FONT 
+color=#333399>&gt;&gt;</FONT> <FONT 
+color=#6e00aa>2</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// TextView[] txtArr = new 
+TextView[size];</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinkedList<FONT 
+color=#333399>&lt;</FONT>TextView<FONT color=#333399>&gt;</FONT> listTxtTop 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinkedList<FONT color=#333399>&lt;</FONT>TextView<FONT 
+color=#333399>&gt;</FONT>();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinkedList<FONT 
+color=#333399>&lt;</FONT>TextView<FONT color=#333399>&gt;</FONT> listTxtBottom 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinkedList<FONT color=#333399>&lt;</FONT>TextView<FONT 
+color=#333399>&gt;</FONT>();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> size; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+keyword <FONT color=#333399>=</FONT> 
+vecKeywords.get(i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+随机颜色</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> ranColor <FONT color=#333399>=</FONT> 0xff000000 
+<FONT color=#333399>|</FONT> 
+random.nextInt(0x0077ffff);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+随机位置，糙值</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> xy[] <FONT color=#333399>=</FONT> 
+randomXY(random, listX, listY, 
+xItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+随机字体大小</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> txtSize <FONT color=#333399>=</FONT> 
+TEXT_SIZE_MIN;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//+ random.nextInt(TEXT_SIZE_MAX - TEXT_SIZE_MIN + 
+1);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+实例化TextView</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> TextView txt <FONT color=#333399>=</FONT> 
+<FONT color=#0000ff><B>new</B></FONT> 
+TextView(getContext());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setOnClickListener(itemClickListener);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setText(keyword);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setTextColor(ranColor);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 
+txtSize);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setShadowLayer(<FONT 
+color=#6e00aa>2</FONT>, <FONT color=#6e00aa>2</FONT>, <FONT 
+color=#6e00aa>2</FONT>, 
+0xff696969);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setGravity(Gravity.CENTER);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//设置选中背景色(新增)</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drawable 
+drawable <FONT color=#333399>=</FONT> 
+getResources().getDrawable(R.drawable.comp_griditem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawable.setAlpha(<FONT 
+color=#6e00aa>80</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setBackgroundDrawable(drawable);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+获取文本长度</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Paint 
+paint <FONT color=#333399>=</FONT> 
+txt.getPaint();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> strWidth <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>) 
+Math.ceil(paint.measureText(keyword));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xy[IDX_TXT_LENGTH] 
+<FONT color=#333399>=</FONT> 
+strWidth;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+第一次修正:修正x坐标</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (xy[IDX_X] <FONT color=#333399>+</FONT> strWidth 
+<FONT color=#333399>&gt;</FONT> width <FONT color=#333399>-</FONT> (xItem <FONT 
+color=#333399>&gt;&gt;</FONT> <FONT color=#6e00aa>1</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> baseX <FONT color=#333399>=</FONT> width <FONT 
+color=#333399>-</FONT> 
+strWidth;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+减少文本右边缘一样的概率</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xy[IDX_X] 
+<FONT color=#333399>=</FONT> baseX <FONT color=#333399>-</FONT> xItem <FONT 
+color=#333399>+</FONT> random.nextInt(xItem <FONT color=#333399>&gt;&gt;</FONT> 
+<FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(xy[IDX_X] <FONT color=#333399>==</FONT> <FONT color=#6e00aa>0</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+减少文本左边缘一样的概率</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xy[IDX_X] 
+<FONT color=#333399>=</FONT> Math.max(random.nextInt(xItem), xItem <FONT 
+color=#333399>/</FONT> <FONT 
+color=#6e00aa>3</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xy[IDX_DIS_Y] 
+<FONT color=#333399>=</FONT> Math.abs(xy[IDX_Y] <FONT color=#333399>-</FONT> 
+yCenter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.setTag(xy);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (xy[IDX_Y] <FONT color=#333399>&gt;</FONT> 
+yCenter) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listTxtBottom.add(txt);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listTxtTop.add(txt);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attach2Screen(listTxtTop, 
+xCenter, yCenter, 
+yItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attach2Screen(listTxtBottom, 
+xCenter, yCenter, 
+yItem);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/** 修正TextView的Y坐标将将其添加到容器上。 
+*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> attach2Screen(LinkedList<FONT 
+color=#333399>&lt;</FONT>TextView<FONT color=#333399>&gt;</FONT> listTxt, <FONT 
+color=#0000ff><B>int</B></FONT> 
+xCenter,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> yCenter, <FONT color=#0000ff><B>int</B></FONT> 
+yItem) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> size <FONT color=#333399>=</FONT> 
+listTxt.size();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sortXYList(listTxt, 
+size);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> size; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+txt <FONT color=#333399>=</FONT> 
+listTxt.get(i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] iXY <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>[]) 
+txt.getTag();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Log.d("ANDROID_LAB", "fix[ " + txt.getText() + " ] x:" 
++</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// iXY[IDX_X] + " y:" + iXY[IDX_Y] + " 
+r2="</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// + 
+iXY[IDX_DIS_Y]);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+第二次修正:修正y坐标</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> yDistance <FONT color=#333399>=</FONT> 
+iXY[IDX_Y] <FONT color=#333399>-</FONT> 
+yCenter;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+对于最靠近中心点的，其值不会大于yItem&lt;br/&gt;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+对于可以一路下降到中心点的，则该值也是其应调整的大小&lt;br/&gt;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> yMove <FONT color=#333399>=</FONT> 
+Math.abs(yDistance);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inner<FONT 
+color=#333399>:</FONT> <FONT color=#0000ff><B>for</B></FONT> (<FONT 
+color=#0000ff><B>int</B></FONT> k <FONT color=#333399>=</FONT> i <FONT 
+color=#333399>-</FONT> <FONT color=#6e00aa>1</FONT>; k <FONT 
+color=#333399>&gt;</FONT><FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>; k<FONT color=#333399>--</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] kXY <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>[]) 
+listTxt.get(k).getTag();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> startX <FONT color=#333399>=</FONT> 
+kXY[IDX_X];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> endX <FONT color=#333399>=</FONT> startX <FONT 
+color=#333399>+</FONT> 
+kXY[IDX_TXT_LENGTH];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+y轴以中心点为分隔线，在同一侧</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (yDistance <FONT color=#333399>*</FONT> 
+(kXY[IDX_Y] <FONT color=#333399>-</FONT> yCenter) <FONT 
+color=#333399>&gt;</FONT> <FONT color=#6e00aa>0</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Log.d("ANDROID_LAB", "compare:" 
++</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+listTxt.get(k).getText());</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (isXMixed(startX, endX, iXY[IDX_X], 
+iXY[IDX_X]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>+</FONT> iXY[IDX_TXT_LENGTH])) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> tmpMove <FONT color=#333399>=</FONT> 
+Math.abs(iXY[IDX_Y] <FONT color=#333399>-</FONT> 
+kXY[IDX_Y]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (tmpMove <FONT color=#333399>&gt;</FONT> yItem) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yMove 
+<FONT color=#333399>=</FONT> 
+tmpMove;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(yMove <FONT color=#333399>&gt;</FONT> <FONT color=#6e00aa>0</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+取消默认值。</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yMove 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Log.d("ANDROID_LAB", 
+"break");</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT> 
+inner;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Log.d("ANDROID_LAB", txt.getText() + " yMove=" + 
+yMove);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (yMove <FONT color=#333399>&gt;</FONT> yItem) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> maxMove <FONT color=#333399>=</FONT> yMove <FONT 
+color=#333399>-</FONT> 
+yItem;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> randomMove <FONT color=#333399>=</FONT> 
+random.nextInt(maxMove);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> realMove <FONT color=#333399>=</FONT> 
+Math.max(randomMove, maxMove <FONT color=#333399>&gt;&gt;</FONT> <FONT 
+color=#6e00aa>1</FONT>) <FONT color=#333399>*</FONT> 
+yDistance<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>/</FONT> 
+Math.abs(yDistance);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iXY[IDX_Y] 
+<FONT color=#333399>=</FONT> iXY[IDX_Y] <FONT color=#333399>-</FONT> 
+realMove;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iXY[IDX_DIS_Y] 
+<FONT color=#333399>=</FONT> Math.abs(iXY[IDX_Y] <FONT color=#333399>-</FONT> 
+yCenter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+已经调整过前i个需要再次排序</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sortXYList(listTxt, 
+i <FONT color=#333399>+</FONT> <FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FrameLayout.LayoutParams 
+layParams <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+FrameLayout.LayoutParams(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FrameLayout.LayoutParams.WRAP_CONTENT,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FrameLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layParams.gravity 
+<FONT color=#333399>=</FONT> Gravity.LEFT <FONT color=#333399>|</FONT> 
+Gravity.TOP;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layParams.leftMargin 
+<FONT color=#333399>=</FONT> 
+iXY[IDX_X];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layParams.topMargin 
+<FONT color=#333399>=</FONT> 
+iXY[IDX_Y];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addView(txt, 
+layParams);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+动画</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AnimationSet 
+animSet <FONT color=#333399>=</FONT> getAnimationSet(iXY, xCenter, 
+yCenter,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtAnimInType);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txt.startAnimation(animSet);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> AnimationSet getAnimationSet(<FONT 
+color=#0000ff><B>int</B></FONT>[] xy, <FONT color=#0000ff><B>int</B></FONT> 
+xCenter, <FONT color=#0000ff><B>int</B></FONT> 
+yCenter,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> type) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AnimationSet animSet <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+AnimationSet(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.setInterpolator(interpolator);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (type <FONT color=#333399>==</FONT> 
+OUTSIDE_TO_LOCATION) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animAlpha2Opaque);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animScaleLarge2Normal);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateAnimation 
+translate <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TranslateAnimation((xy[IDX_X]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>+</FONT> (xy[IDX_TXT_LENGTH] <FONT color=#333399>&gt;&gt;</FONT> 
+<FONT color=#6e00aa>1</FONT>) <FONT color=#333399>-</FONT> xCenter) <FONT 
+color=#333399>&lt;&lt;</FONT> <FONT color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>0</FONT>,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(xy[IDX_Y] 
+<FONT color=#333399>-</FONT> yCenter) <FONT color=#333399>&lt;&lt;</FONT> <FONT 
+color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(translate);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(type <FONT color=#333399>==</FONT> LOCATION_TO_OUTSIDE) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animAlpha2Transparent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animScaleNormal2Large);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateAnimation 
+translate <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TranslateAnimation(<FONT color=#6e00aa>0</FONT>, 
+(xy[IDX_X]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>+</FONT> (xy[IDX_TXT_LENGTH] <FONT color=#333399>&gt;&gt;</FONT> 
+<FONT color=#6e00aa>1</FONT>) <FONT color=#333399>-</FONT> xCenter) <FONT 
+color=#333399>&lt;&lt;</FONT> <FONT color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>0</FONT>,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(xy[IDX_Y] 
+<FONT color=#333399>-</FONT> yCenter) <FONT color=#333399>&lt;&lt;</FONT> <FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(translate);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(type <FONT color=#333399>==</FONT> LOCATION_TO_CENTER) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animAlpha2Transparent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animScaleNormal2Zero);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateAnimation 
+translate <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TranslateAnimation(<FONT 
+color=#6e00aa>0</FONT>,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<FONT 
+color=#333399>-</FONT>xy[IDX_X] <FONT color=#333399>+</FONT> xCenter), <FONT 
+color=#6e00aa>0</FONT>, (<FONT color=#333399>-</FONT>xy[IDX_Y] <FONT 
+color=#333399>+</FONT> 
+yCenter));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(translate);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(type <FONT color=#333399>==</FONT> CENTER_TO_LOCATION) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animAlpha2Opaque);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(animScaleZero2Normal);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TranslateAnimation 
+translate <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TranslateAnimation(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<FONT 
+color=#333399>-</FONT>xy[IDX_X] <FONT color=#333399>+</FONT> xCenter), <FONT 
+color=#6e00aa>0</FONT>, (<FONT color=#333399>-</FONT>xy[IDX_Y] <FONT 
+color=#333399>+</FONT> yCenter), <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.addAnimation(translate);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;animSet.setDuration(animDuration);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+animSet;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+根据与中心点的距离由近到远进行冒泡排序。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param endIdx<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+起始位置。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+txtArr<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+待排序的数组。<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+sortXYList(LinkedList<FONT color=#333399>&lt;</FONT>TextView<FONT 
+color=#333399>&gt;</FONT> listTxt, <FONT color=#0000ff><B>int</B></FONT> endIdx) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> endIdx; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> k <FONT 
+color=#333399>=</FONT> i <FONT color=#333399>+</FONT> <FONT 
+color=#6e00aa>1</FONT>; k <FONT color=#333399>&lt;</FONT> endIdx; k<FONT 
+color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (((<FONT color=#0000ff><B>int</B></FONT>[]) 
+listTxt.get(k).getTag())[IDX_DIS_Y] <FONT color=#333399>&lt;</FONT> ((<FONT 
+color=#0000ff><B>int</B></FONT>[]) 
+listTxt<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.get(i).getTag())[IDX_DIS_Y]) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+iTmp <FONT color=#333399>=</FONT> 
+listTxt.get(i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+kTmp <FONT color=#333399>=</FONT> 
+listTxt.get(k);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listTxt.set(i, 
+kTmp);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listTxt.set(k, 
+iTmp);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/** A线段与B线段所代表的直线在X轴映射上是否有交集。 
+*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>boolean</B></FONT> isXMixed(<FONT 
+color=#0000ff><B>int</B></FONT> startA, <FONT color=#0000ff><B>int</B></FONT> 
+endA, <FONT color=#0000ff><B>int</B></FONT> startB, <FONT 
+color=#0000ff><B>int</B></FONT> endB) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>boolean</B></FONT> result <FONT color=#333399>=</FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (startB <FONT color=#333399>&gt;</FONT><FONT 
+color=#333399>=</FONT> startA <FONT color=#333399>&amp;&amp;</FONT> startB <FONT 
+color=#333399>&lt;</FONT><FONT color=#333399>=</FONT> endA) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result 
+<FONT color=#333399>=</FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> (endB 
+<FONT color=#333399>&gt;</FONT><FONT color=#333399>=</FONT> startA <FONT 
+color=#333399>&amp;&amp;</FONT> endB <FONT color=#333399>&lt;</FONT><FONT 
+color=#333399>=</FONT> endA) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result 
+<FONT color=#333399>=</FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> (startA 
+<FONT color=#333399>&gt;</FONT><FONT color=#333399>=</FONT> startB <FONT 
+color=#333399>&amp;&amp;</FONT> startA <FONT color=#333399>&lt;</FONT><FONT 
+color=#333399>=</FONT> endB) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result 
+<FONT color=#333399>=</FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> (endA 
+<FONT color=#333399>&gt;</FONT><FONT color=#333399>=</FONT> startB <FONT 
+color=#333399>&amp;&amp;</FONT> endA <FONT color=#333399>&lt;</FONT><FONT 
+color=#333399>=</FONT> endB) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result 
+<FONT color=#333399>=</FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT>[] 
+randomXY(Random ran, LinkedList<FONT color=#333399>&lt;</FONT>Integer<FONT 
+color=#333399>&gt;</FONT> 
+listX,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinkedList<FONT 
+color=#333399>&lt;</FONT>Integer<FONT color=#333399>&gt;</FONT> listY, <FONT 
+color=#0000ff><B>int</B></FONT> xItem) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] arr <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> <FONT color=#0000ff><B>int</B></FONT>[<FONT 
+color=#6e00aa>4</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arr[IDX_X] 
+<FONT color=#333399>=</FONT> 
+listX.remove(ran.nextInt(listX.size()));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;arr[IDX_Y] 
+<FONT color=#333399>=</FONT> 
+listY.remove(ran.nextInt(listY.size()));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+arr;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onGlobalLayout() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> tmpW <FONT color=#333399>=</FONT> 
+getWidth();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> tmpH <FONT color=#333399>=</FONT> 
+getHeight();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (width <FONT color=#333399>!=</FONT> tmpW <FONT 
+color=#333399>||</FONT> height <FONT color=#333399>!=</FONT> tmpH) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width 
+<FONT color=#333399>=</FONT> 
+tmpW;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height 
+<FONT color=#333399>=</FONT> 
+tmpH;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;show();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> Vector<FONT 
+color=#333399>&lt;</FONT>String<FONT color=#333399>&gt;</FONT> getKeywords() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+vecKeywords;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+rubKeywords() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vecKeywords.clear();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/** 直接清除所有的TextView。在清除之前不会显示动画。 
+*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>public</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> rubAllViews() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;removeAllViews();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setOnItemClickListener(OnClickListener listener) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itemClickListener <FONT 
+color=#333399>=</FONT> 
+listener;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// public void onDraw(Canvas canvas) 
+{</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+super.onDraw(canvas);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+Paint p = new Paint();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+p.setColor(Color.BLACK);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// canvas.drawCircle((width &gt;&gt; 1) - 2, (height &gt;&gt; 1) - 
+2, 4, p);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+p.setColor(Color.RED);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+}</FONT><BR>}</DIV></CODE></BODY></HTML>
