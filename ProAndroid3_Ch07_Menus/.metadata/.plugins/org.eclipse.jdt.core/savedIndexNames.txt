@@ -1,0 +1,2 @@
+INDEX VERSION 1.126+F:\codeshop\ProAndroid3_SourceCode\ProAndroid3_Ch07_Menus\.metadata\.plugins\org.eclipse.jdt.core
+3484607906.index

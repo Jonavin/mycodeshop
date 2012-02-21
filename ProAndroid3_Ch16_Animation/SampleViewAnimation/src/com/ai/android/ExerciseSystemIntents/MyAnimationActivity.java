@@ -1,0 +1,37 @@
+package com.ai.android.ExerciseSystemIntents;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.ImageView;
+
+public class MyAnimationActivity extends Activity {
+	
+	Button btn;
+	ImageView iv;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.test_layout);
+        
+        btn = (Button)findViewById(R.id.btn_animate);
+        iv = (ImageView)findViewById(R.id.img_view_id);
+        
+        btn.setOnClickListener(btnClick);
+        
+	}
+	
+	private View.OnClickListener btnClick = new View.OnClickListener() {
+		public void onClick(View v) {
+			
+			Animation anim = new MyAnimation();
+			iv.startAnimation(anim);
+			
+			
+		}
+	};
+	
+}
