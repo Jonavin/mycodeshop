@@ -1,0 +1,15 @@
+INDEX VERSION 1.126+F:\codeshop\ProAndroid3_SourceCode\ProAndroid3_Ch11_Services\.metadata\.plugins\org.eclipse.jdt.core
+38920888.index
+3636826764.index
+945173767.index
+2776227209.index
+2041637278.index
+2084927501.index
+2181630140.index
+100529180.index
+2832515989.index
+2506573946.index
+2381889622.index
+3484607906.index
+216994697.index
+4029053463.index

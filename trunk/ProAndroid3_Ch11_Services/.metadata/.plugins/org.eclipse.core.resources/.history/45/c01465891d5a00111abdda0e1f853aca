@@ -1,0 +1,21 @@
+package com.ai.android.ExerciseSystemIntents;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.widget.ImageView;
+
+public class MyAnimationActivity extends Activity {
+	
+	ImageView iv;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.list_layout);
+        
+        iv = (ImageView)findViewById(R.id.img_view_id);
+        
+        
+	}
+	
+}
