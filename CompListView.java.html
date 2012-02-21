@@ -1,0 +1,824 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>CompListView.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.ArrayList;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.HashMap;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.List;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.Map;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.concurrent.locks.Lock;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+java.util.concurrent.locks.ReentrantLock;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.Context;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Color;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.graphics.drawable.ColorDrawable;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.drawable.Drawable;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Handler;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Message;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.Log;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.Gravity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.LayoutInflater;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.View;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.ViewGroup;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.AbsListView;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.LinearLayout;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.ListView;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.ProgressBar;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.TextView;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.Toast;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> com.ztesoft.mobile.trunk.R;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.Constant;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.model.MmPageAreaFieldVO;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.model.PageModel;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util.RunThreadManager;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets.helper.ItemField;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets.helper.ItemTmp;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets.helper.ListItemAdapter;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets.helper.MMOnFieldClickListener;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets.helper.MMOnItemClickListener;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets.helper.OnListItemDrawFilter;<BR><FONT 
+color=#008000>/**<BR>&nbsp;* 
+ListView分页列表控件<BR>&nbsp;*<BR>&nbsp;*/</FONT><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+CompListView <FONT color=#0000ff><B>extends</B></FONT> ListView <FONT 
+color=#0000ff><B>implements</B></FONT> IWidgets 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>final</B></FONT> 
+String MESSAGE_NO_DATA <FONT color=#333399>=</FONT> <FONT 
+color=#ff00bf>"没有数据了"</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+LOAD_DATA <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>200</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Context 
+context;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> LinearLayout 
+loadingLayout;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//进度条</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> View 
+pageBar;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//分页信息显示文本</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//查询信息</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Object 
+bo;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//BO类</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> String 
+methodName;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//BO中查询列表的方法名</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Map<FONT color=#333399>&lt;</FONT>String, 
+String<FONT color=#333399>&gt;</FONT> 
+conditionMap;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//查询条件参数</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//分页信息</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+pageIndex <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//第几页</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+pageSize <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>10</FONT>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//每页记录数</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+totalCount;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//总记录数</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+pageCount;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//总页数</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+hasMore <FONT color=#333399>=</FONT> 
+true;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//是否还有更多</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//其他信息</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+isPaging;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//是否分页</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//私有信息</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> ListItemAdapter 
+adapter;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> MMOnItemClickListener 
+onItemClickListener;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//是否下在加载列表中, 
+设置此变量,以防止用户恶意狂点击查询按钮,出现数据重复加载的现象</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+isLoading <FONT color=#333399>=</FONT> 
+false;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//常用属性</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+Item左上角的图标<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+PROP_ICON <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+Item右边的箭头<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+PROP_CURSOR <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>2</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+线条<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+PROP_LINE <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>4</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+properties <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;&nbsp;&nbsp;&nbsp;&nbsp;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> CompListView(Context context) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.context <FONT color=#333399>=</FONT> 
+context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.adapter <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+ListItemAdapter(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//去掉滚动的时候，顶部的阴影</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.setCacheColorHint(Color.parseColor(<FONT 
+color=#ff00bf>"#00000000"</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 新新构造方法 &lt;br 
+/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+需要做的事情：<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+重写OnListItemDrawFilter的doDrawViewList方法或doDrawView方法<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param viewListList 
+类似于CompForm的传入参数，里面的List&lt;View&gt;指一行<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param fieldConfigList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+onListItemDrawFilter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, 
+OnListItemDrawFilter onListItemDrawFilter) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_VIEWLISTLIST);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setOnListItemDrawFilter(onListItemDrawFilter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造方法1a：布局模板<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemLayTemp 
+布局模板<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, ItemTmp 
+itemLayTemp, Object[][] keyLabelIds) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(keyLabelIds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> itemLayoutRes <FONT color=#333399>=</FONT> 
+itemLayTemp.getItemLayoutRes();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemLayoutRes(itemLayoutRes);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造方法1b：布局模板+DrawFilter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemLayTemp 
+布局模板<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param onListItemDrawFilter 
+Item绘制拦截处理器<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, ItemTmp 
+itemLayTemp, Object[][] keyLabelIds, OnListItemDrawFilter onListItemDrawFilter) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(keyLabelIds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> itemLayoutRes <FONT color=#333399>=</FONT> 
+itemLayTemp.getItemLayoutRes();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemLayoutRes(itemLayoutRes);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setOnListItemDrawFilter(onListItemDrawFilter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造方法1a：布局模板<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemLayTemp 
+布局模板<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, ItemTmp 
+itemLayTemp, List<FONT color=#333399>&lt;</FONT>MmPageAreaFieldVO<FONT 
+color=#333399>&gt;</FONT> fieldVOList) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(fieldVOList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> itemLayoutRes <FONT color=#333399>=</FONT> 
+itemLayTemp.getItemLayoutRes();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemLayoutRes(itemLayoutRes);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造方法1b：布局模板+DrawFilter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemLayTemp 
+布局模板<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param onListItemDrawFilter 
+Item绘制拦截处理器<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, ItemTmp 
+itemLayTemp, List<FONT color=#333399>&lt;</FONT>MmPageAreaFieldVO<FONT 
+color=#333399>&gt;</FONT> fieldVOList, OnListItemDrawFilter 
+onListItemDrawFilter) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(fieldVOList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> itemLayoutRes <FONT color=#333399>=</FONT> 
+itemLayTemp.getItemLayoutRes();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemLayoutRes(itemLayoutRes);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setOnListItemDrawFilter(onListItemDrawFilter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造方法3：Item布局资源文件<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemLayoutRes 
+Item布局资源文件的ID<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, <FONT 
+color=#0000ff><B>int</B></FONT> itemLayoutRes, Object[][] keyLabelIds) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(keyLabelIds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemLayoutRes(itemLayoutRes);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 构造方法2b：Item布局资源文件 + 
+DrawFilter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemLayoutRes 
+Item布局资源文件的ID<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param onListItemDrawFilter 
+Item绘制拦截处理器<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, <FONT 
+color=#0000ff><B>int</B></FONT> itemLayoutRes, Object[][] keyLabelIds, 
+OnListItemDrawFilter onListItemDrawFilter) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(keyLabelIds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemLayoutRes(itemLayoutRes);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setOnListItemDrawFilter(onListItemDrawFilter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造方法3a：ItemView<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemView 
+传进来作为Item的View组件<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, View itemView, 
+Object[][] keyLabelIds) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(keyLabelIds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemView(itemView);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 构造方法3b：ItemView + 
+DrawFilter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemView 
+传进来作为Item的View组件<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param keyLabelIds 
+显示字段配置信息<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param onListItemDrawFilter 
+Item绘制拦截处理器<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, View itemView, 
+Object[][] keyLabelIds, OnListItemDrawFilter onListItemDrawFilter) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List<FONT 
+color=#333399>&lt;</FONT>ItemField<FONT color=#333399>&gt;</FONT> itemFieldList 
+<FONT color=#333399>=</FONT> 
+ItemField.buildFieldList(keyLabelIds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_TWOARRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemView(itemView);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemFieldList(itemFieldList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setOnListItemDrawFilter(onListItemDrawFilter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+新构造方法<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造的时候传ItemView进去，其中ItemView中需要注入值的组件（如：显示Value的TextView， 
+显示Label的TextView）命名规则如下：&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+显示Value的TextView的Tag值为MmPageAreaFieldVO配置中的fieldCode的值；显示Lable的TextView的Tag值为"LABEL_" 
++ fieldCode的值<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemView 
+Item的View，每个需要注入值的View须要设置tag的值<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+fieldConfigList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+onListItemDrawFilter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, View itemView, 
+List<FONT color=#333399>&lt;</FONT>MmPageAreaFieldVO<FONT 
+color=#333399>&gt;</FONT> fieldConfigList) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_FIELDCONFIG);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemView(itemView);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setFieldConfigList(fieldConfigList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 新构造方法 
+&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+构造的时候传ItemView进去，其中ItemView中需要注入值的组件（如：显示Value的TextView， 
+显示Label的TextView）命名规则如下：&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+显示Value的TextView的Tag值为MmPageAreaFieldVO配置中的fieldCode的值；显示Lable的TextView的Tag值为"LABEL_" 
++ fieldCode的值<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param itemView 
+Item的View，每个需要注入值的View须要设置tag的值<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+fieldConfigList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+onListItemDrawFilter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Deprecated 
+<FONT color=#008000>//不再建议使用</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> CompListView(Context context, View itemView, 
+List<FONT color=#333399>&lt;</FONT>MmPageAreaFieldVO<FONT 
+color=#333399>&gt;</FONT> fieldConfigList, OnListItemDrawFilter 
+onListItemDrawFilter) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setType(ListItemAdapter.TYPE_FIELDCONFIG);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setItemView(itemView);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setFieldConfigList(fieldConfigList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setOnListItemDrawFilter(onListItemDrawFilter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+设置常用属性<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+此方法只用于TYPE_VIEWLISTLIST的形式<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+propsCode<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setProperties(<FONT color=#0000ff><B>int</B></FONT> propsCode) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.properties <FONT color=#333399>|=</FONT> 
+propsCode;<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View itemView = 
+adapter.getItemView();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//设置Item左上角的图标</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View iconView = 
+itemView.findViewWithTag(Constant.TAG_ICON);</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(iconView != 
+null) {</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(hasProperty(PROP_ICON)) 
+{</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iconView.setVisibility(View.VISIBLE);</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+else {</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;iconView.setVisibility(View.GONE);</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//设置Item右边的图标</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View cursorView 
+= itemView.findViewWithTag(Constant.TAG_CURSOR);</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(cursorView != 
+null) {</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(hasProperty(PROP_CURSOR)) 
+{</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursorView.setVisibility(View.VISIBLE);</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+else {</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cursorView.setVisibility(View.GONE);</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setProperties(propsCode);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+判断ListView是否设置了某常用属性<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+prop<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+hasProperty(<FONT color=#0000ff><B>int</B></FONT> prop) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>((<FONT 
+color=#0000ff><B>this</B></FONT>.properties <FONT color=#333399>&amp;</FONT> 
+prop) <FONT color=#333399>==</FONT> prop) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+给ListView装载数据并显示<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+dataList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+redraw(List dataList) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initAdapter(dataList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+给ListView加载并显示数据<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param bo 
+对应BO的类名<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param methodName 
+BO中加载数据的方法名<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param conditionMap 
+条件Map<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param pageSize 
+每页显示多少条记录<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param isPaging 
+是否分页，true表示分页，false表示不分页<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+redraw(Object bo, String methodName, Map<FONT color=#333399>&lt;</FONT>String, 
+String<FONT color=#333399>&gt;</FONT> conditionMap, <FONT 
+color=#0000ff><B>int</B></FONT> pageSize, <FONT 
+color=#0000ff><B>boolean</B></FONT> isPaging) 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(isLoading) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isLoading 
+<FONT color=#333399>=</FONT> 
+true;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isLoading <FONT 
+color=#333399>=</FONT> true;<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(lock.tryLock()) 
+{</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hasMore 
+<FONT color=#333399>=</FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(conditionMap <FONT color=#333399>==</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditionMap 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> HashMap<FONT 
+color=#333399>&lt;</FONT>String, String<FONT 
+color=#333399>&gt;</FONT>();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.bo <FONT color=#333399>=</FONT> 
+bo;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.methodName <FONT color=#333399>=</FONT> 
+methodName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.conditionMap <FONT color=#333399>=</FONT> 
+conditionMap;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.pageIndex <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.pageSize <FONT color=#333399>=</FONT> 
+pageSize;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.isPaging <FONT color=#333399>=</FONT> 
+isPaging;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addLoadingBar();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//添加进度条</FONT>&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;initAdapter(<FONT 
+color=#0000ff><B>new</B></FONT> 
+ArrayList());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//初始化Adapter，使其开始作用于ListView</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadDataFromBO();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+初始化Adapter，使其开始作用于ListView<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+dataList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+initAdapter(List dataList) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setDataList(dataList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setAdapter(adapter);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//设置Item与Item间的线条</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(hasProperty(PROP_LINE)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Drawable 
+divider <FONT color=#333399>=</FONT> 
+getDivider();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(divider <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;divider.setAlpha(<FONT 
+color=#6e00aa>10</FONT>);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setDivider(null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//设置分页滚动事件</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(isPaging) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setOnScrollListener(onScrollListener);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+loadDataFromBO() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditionMap.put(<FONT 
+color=#ff00bf>"pageIndex"</FONT>, (pageIndex <FONT color=#333399>+</FONT> <FONT 
+color=#6e00aa>1</FONT>) <FONT color=#333399>+</FONT> <FONT 
+color=#ff00bf>""</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;conditionMap.put(<FONT 
+color=#ff00bf>"pageSize"</FONT>, pageSize <FONT color=#333399>+</FONT> <FONT 
+color=#ff00bf>""</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RunThreadManager.runThreadWithParams(bo, 
+methodName, handler, LOAD_DATA, 
+conditionMap);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(loadingLayout <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.setVisibility(View.VISIBLE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+添加进度条行<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+addLoadingBar() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(loadingLayout <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+layout <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout(context);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 设置布局 
+水平方向</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.setOrientation(LinearLayout.HORIZONTAL);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+进度条</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProgressBar 
+progressBar <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ProgressBar(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;progressBar.setIndeterminateDrawable(<FONT 
+color=#0000ff><B>this</B></FONT>.getResources().getDrawable(R.drawable.comp_progressbar));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+进度条显示位置</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;progressBar.setPadding(<FONT 
+color=#6e00aa>0</FONT>, <FONT color=#6e00aa>0</FONT>, <FONT 
+color=#6e00aa>15</FONT>, <FONT 
+color=#6e00aa>0</FONT>);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+把进度条加入到layout中</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+mLayoutParams <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.addView(progressBar, 
+mLayoutParams);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+文本内容</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+textView <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TextView(context);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textView.setText(<FONT 
+color=#ff00bf>"加载中..."</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textView.setTextColor(Color.GRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textView.setGravity(Gravity.CENTER_VERTICAL);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//把文本加入到layout中</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+FFlayoutParams <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.addView(textView, 
+FFlayoutParams);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+设置layout的重力方向，即对齐方式是</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.setGravity(Gravity.CENTER);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout(context);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.addView(layout, 
+mLayoutParams);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.setGravity(Gravity.CENTER);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.setVisibility(View.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;addFooterView(loadingLayout);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 数据加载完后显示页码信息 &lt;br 
+/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 使用方法1: 
+在loadData方法调用前，setTxtPageInfo(TextView) &lt;br 
+/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 使用方法2：在构造时重写此方法，将分页信息显示到你想要显示的地方 &lt;br 
+/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 注意：只支持分页的情况 &lt;br 
+/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+drawPageBar(<FONT color=#0000ff><B>int</B></FONT> pageIndex, <FONT 
+color=#0000ff><B>int</B></FONT> pageSize, <FONT color=#0000ff><B>int</B></FONT> 
+totalCount, <FONT color=#0000ff><B>int</B></FONT> pageCount) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(pageBar <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+txtPageMsg <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(pageBar <FONT 
+color=#0000ff><B>instanceof</B></FONT> ViewGroup) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> childCount <FONT color=#333399>=</FONT> 
+((ViewGroup) 
+pageBar).getChildCount();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT>(<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> childCount; i <FONT color=#333399>++</FONT> ) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View 
+subView <FONT color=#333399>=</FONT> ((ViewGroup) 
+pageBar).getChildAt(i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(subView <FONT 
+color=#0000ff><B>instanceof</B></FONT> TextView) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtPageMsg 
+<FONT color=#333399>=</FONT> 
+(TextView)subView;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(txtPageMsg <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> currCount <FONT color=#333399>=</FONT> pageIndex 
+<FONT color=#333399>&lt;</FONT> pageCount <FONT color=#333399>?</FONT> pageIndex 
+<FONT color=#333399>*</FONT> pageSize <FONT color=#333399>:</FONT> 
+totalCount;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+pageInfo <FONT color=#333399>=</FONT> <FONT color=#ff00bf>"当前已显示"</FONT> <FONT 
+color=#333399>+</FONT> currCount <FONT color=#333399>+</FONT> <FONT 
+color=#ff00bf>"/"</FONT> <FONT color=#333399>+</FONT> totalCount <FONT 
+color=#333399>+</FONT> <FONT 
+color=#ff00bf>"条记录！"</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtPageMsg.setText(pageInfo);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> OnScrollListener onScrollListener <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> OnScrollListener() 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+lastItemIndex <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onScroll(AbsListView view, <FONT color=#0000ff><B>int</B></FONT> 
+firstVisibleItem, <FONT color=#0000ff><B>int</B></FONT> visibleItemCount, <FONT 
+color=#0000ff><B>int</B></FONT> totalItemCount) {<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.i("CompListView", 
+"first : " + firstVisibleItem + ", visible : " + visibleItemCount + ", total : " 
++ 
+totalItemCount);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lastItemIndex 
+<FONT color=#333399>=</FONT> firstVisibleItem <FONT color=#333399>+</FONT> 
+visibleItemCount;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onScrollStateChanged(AbsListView view, <FONT color=#0000ff><B>int</B></FONT> 
+scrollState) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> ((scrollState <FONT color=#333399>==</FONT> 
+OnScrollListener.SCROLL_STATE_IDLE) <FONT color=#333399>&amp;&amp;</FONT> 
+lastItemIndex <FONT color=#333399>==</FONT> adapter.getCount() <FONT 
+color=#333399>+</FONT> <FONT color=#6e00aa>1</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(hasMore) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadDataFromBO();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toast.makeText(context, 
+MESSAGE_NO_DATA, 
+Toast.LENGTH_SHORT).show();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;};&nbsp;&nbsp;&nbsp;&nbsp;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Handler handler <FONT color=#333399>=</FONT> 
+<FONT color=#0000ff><B>new</B></FONT> Handler() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+handleMessage(Message msg) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(msg.what <FONT color=#333399>==</FONT> LOAD_DATA) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(loadingLayout <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.setVisibility(View.GONE);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object 
+returnObj <FONT color=#333399>=</FONT> 
+msg.obj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;List 
+newList <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(returnObj <FONT 
+color=#0000ff><B>instanceof</B></FONT> List) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newList 
+<FONT color=#333399>=</FONT> 
+(List)returnObj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(isPaging <FONT color=#333399>&amp;&amp;</FONT> 
+newList <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(newList.size() <FONT color=#333399>&gt;</FONT> 
+<FONT color=#6e00aa>0</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map 
+firstMap <FONT color=#333399>=</FONT> (Map)newList.get(<FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(firstMap.containsKey(<FONT 
+color=#ff00bf>"pageCount"</FONT>)) 
+{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//服务端有返回pageCount等分页信息时</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageIndex 
+<FONT color=#333399>=</FONT> Integer.parseInt((String)(firstMap.get(<FONT 
+color=#ff00bf>"pageIndex"</FONT>)));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageSize 
+<FONT color=#333399>=</FONT> Integer.parseInt((String)(firstMap.get(<FONT 
+color=#ff00bf>"pageSize"</FONT>)));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalCount 
+<FONT color=#333399>=</FONT> Integer.parseInt((String)(firstMap.get(<FONT 
+color=#ff00bf>"totalCount"</FONT>)));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageCount 
+<FONT color=#333399>=</FONT> Integer.parseInt((String)(firstMap.get(<FONT 
+color=#ff00bf>"pageCount"</FONT>)));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hasMore 
+<FONT color=#333399>=</FONT> (pageIndex <FONT color=#333399>&lt;</FONT> 
+pageCount);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawPageBar(pageIndex, 
+pageSize, totalCount, 
+pageCount);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//服务端没有返回分页信息，则通过pageIndex递增来作为当前页</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageIndex 
+<FONT color=#333399>=</FONT> pageIndex <FONT color=#333399>+</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//服务端没有返回数据时，则表示最后一页了</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hasMore 
+<FONT color=#333399>=</FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toast.makeText(context, 
+MESSAGE_NO_DATA, 
+Toast.LENGTH_SHORT).show();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT 
+color=#0000ff><B>if</B></FONT>(returnObj <FONT 
+color=#0000ff><B>instanceof</B></FONT> PageModel) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PageModel 
+pageModel <FONT color=#333399>=</FONT> 
+(PageModel)returnObj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newList 
+<FONT color=#333399>=</FONT> 
+pageModel.getData();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageIndex 
+<FONT color=#333399>=</FONT> 
+pageModel.getPageIndex();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageSize 
+<FONT color=#333399>=</FONT> 
+pageModel.getPageSize();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalCount 
+<FONT color=#333399>=</FONT> 
+pageModel.getTotalCount();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageCount 
+<FONT color=#333399>=</FONT> 
+pageModel.getPageCount();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawPageBar(pageIndex, 
+pageSize, totalCount, 
+pageCount);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(newList <FONT color=#333399>==</FONT> null <FONT 
+color=#333399>||</FONT> newList.isEmpty()) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toast.makeText(context, 
+MESSAGE_NO_DATA, 
+Toast.LENGTH_SHORT).show();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.getDataList().addAll(newList);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.notifyDataSetChanged();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isLoading 
+<FONT color=#333399>=</FONT> 
+false;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT 
+color=#0000ff><B>if</B></FONT>(msg.what <FONT color=#333399>==</FONT> 
+Constant.EXCEPTION) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isLoading 
+<FONT color=#333399>=</FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(loadingLayout <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.setVisibility(View.GONE);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toast.makeText(context, 
+(String)msg.obj, 
+Toast.LENGTH_LONG).show();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<BR>&nbsp;&nbsp;&nbsp;&nbsp;};<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setMMOnItemClickListener(MMOnItemClickListener onItemClickListener) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.onItemClickListener <FONT 
+color=#333399>=</FONT> 
+onItemClickListener;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;onItemClickListener.setAdapter(adapter);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setOnItemClickListener(onItemClickListener);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setMMOnFieldClickListener(MMOnFieldClickListener onFieldClickListener) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setOnFieldClickListener(onFieldClickListener);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> MMOnItemClickListener 
+getMMOnItemClickListener() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> <FONT 
+color=#0000ff><B>this</B></FONT>.onItemClickListener;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> View getPageBar() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+pageBar;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setPageBar(View pageBar) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.pageBar <FONT color=#333399>=</FONT> 
+pageBar;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> Object getBo() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+bo;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setBo(Object bo) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.bo <FONT color=#333399>=</FONT> 
+bo;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> String getMethodName() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+methodName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setMethodName(String methodName) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.methodName <FONT color=#333399>=</FONT> 
+methodName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> Map<FONT color=#333399>&lt;</FONT>String, 
+String<FONT color=#333399>&gt;</FONT> getConditionMap() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+conditionMap;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setConditionMap(Map<FONT color=#333399>&lt;</FONT>String, String<FONT 
+color=#333399>&gt;</FONT> conditionMap) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.conditionMap <FONT color=#333399>=</FONT> 
+conditionMap;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+getPageIndex() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+pageIndex;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setPageIndex(<FONT color=#0000ff><B>int</B></FONT> pageIndex) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.pageIndex <FONT color=#333399>=</FONT> 
+pageIndex;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+getPageSize() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+pageSize;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setPageSize(<FONT color=#0000ff><B>int</B></FONT> pageSize) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.pageSize <FONT color=#333399>=</FONT> 
+pageSize;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+getTotalCount() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+totalCount;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setTotalCount(<FONT color=#0000ff><B>int</B></FONT> totalCount) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.totalCount <FONT color=#333399>=</FONT> 
+totalCount;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+getPageCount() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+pageCount;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setPageCount(<FONT color=#0000ff><B>int</B></FONT> pageCount) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.pageCount <FONT color=#333399>=</FONT> 
+pageCount;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+isPaging() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+isPaging;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setPaging(<FONT color=#0000ff><B>boolean</B></FONT> isPaging) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.isPaging <FONT color=#333399>=</FONT> 
+isPaging;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+redraw(Map params) <FONT color=#0000ff><B>throws</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.exception.MmtClientException 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// TODO 
+Auto-generated method 
+stub</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+redraw(Object listViewData, Map 
+params)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.exception.MmtClientException 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// TODO 
+Auto-generated method 
+stub</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+获取数据列表<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> List getDataList() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+adapter.getDataList();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+获取选中行的数据，包括不显示的数据<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> Map getSelectedItemData() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(adapter.getSelectedPosition() <FONT 
+color=#333399>&lt;</FONT> <FONT color=#6e00aa>0</FONT> <FONT 
+color=#333399>||</FONT> getDataList() <FONT color=#333399>==</FONT> null <FONT 
+color=#333399>||</FONT> getDataList().isEmpty()) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map 
+itemData <FONT color=#333399>=</FONT> 
+(Map)getDataList().get(adapter.getSelectedPosition());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+itemData;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+refleshItemView() {<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.notifyDataSetChanged();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.notifyDataSetInvalidated();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> ListItemAdapter getListItemAdapter() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+adapter;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+设置Item的背景图片<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param even 
+index为0的行，偶数行<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param odd 
+index为1的行，奇数行，<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param click 选中的行, 
+若不需要设置，则传入0<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setItemViewBackgroundDrawable(<FONT color=#0000ff><B>int</B></FONT> even, <FONT 
+color=#0000ff><B>int</B></FONT> odd, <FONT color=#0000ff><B>int</B></FONT> 
+click) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT>[] itemBgArr <FONT color=#333399>=</FONT> 
+adapter.getItemBgArr();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itemBgArr[<FONT 
+color=#6e00aa>0</FONT>] <FONT color=#333399>=</FONT> 
+even;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itemBgArr[<FONT 
+color=#6e00aa>1</FONT>] <FONT color=#333399>=</FONT> 
+odd;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(click <FONT color=#333399>!=</FONT> <FONT 
+color=#6e00aa>0</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;itemBgArr[<FONT 
+color=#6e00aa>2</FONT>] <FONT color=#333399>=</FONT> 
+click;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>}</DIV></CODE>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>

@@ -1,0 +1,659 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>Caller.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY>
+<DIV><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.File;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.FileOutputStream;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.IOException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.InputStream;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.lang.reflect.Type;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.HashMap;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.Map;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.HttpEntity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.HttpResponse;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.HttpStatus;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.client.HttpClient;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.methods.HttpGet;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.methods.HttpPost;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.methods.HttpUriRequest;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.params.CookiePolicy;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.params.HttpClientParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.conn.HttpHostConnectException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.conn.scheme.PlainSocketFactory;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.conn.scheme.Scheme;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.conn.scheme.SchemeRegistry;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.conn.ssl.SSLSocketFactory;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.entity.StringEntity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.impl.client.DefaultHttpClient;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.impl.conn.SingleClientConnManager;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.params.BasicHttpParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.params.HttpConnectionParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.params.HttpParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.params.HttpProtocolParams;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.Log;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> com.google.gson.reflect.TypeToken;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.ClientCache;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.Constant;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.Constant.ACCEPT;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.Constant.Action;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.Constant.ParamConst;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.Constant.REQ_MODE;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.exception.MMException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.exception.MmtClientException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.model.DynamicDict;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.model.ServiceResult;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util.Clazz;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util.JsonUtil;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util.StringUtil;<BR><BR><FONT 
+color=#008000>/**<BR>&nbsp;*&nbsp;<BR>&nbsp;* 
+httpClient工具类，封装JSON交互协议<BR>&nbsp;*&nbsp;<BR>&nbsp;*/</FONT><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+Caller {<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>static</B></FONT> DefaultHttpClient httpclient <FONT 
+color=#333399>=</FONT> null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+RESULT {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> String SUCCESS_CODE <FONT 
+color=#333399>=</FONT> <FONT 
+color=#ff00bf>"0"</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> String FAIL_CODE <FONT 
+color=#333399>=</FONT> <FONT 
+color=#ff00bf>"-1"</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Singleton 
+HttpClient<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param timeout<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 超时时间 
+，单位为秒<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> DefaultHttpClient getHttpClient() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (null <FONT color=#333399>!=</FONT> httpclient) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+httpclient;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> timeoutConnection <FONT color=#333399>=</FONT> 
+<FONT color=#6e00aa>30</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> timeoutSocket <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>35</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> BUFFER_SIZE <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>8192</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>20</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpParams 
+httpParameters <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+BasicHttpParams();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setConnectionTimeout(httpParameters, 
+timeoutConnection);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setSoTimeout(httpParameters, 
+timeoutSocket);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setSocketBufferSize(httpParameters, 
+BUFFER_SIZE);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SchemeRegistry 
+schemeRegistry <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+SchemeRegistry();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"http"</FONT>, 
+PlainSocketFactory.getSocketFactory(), <FONT 
+color=#6e00aa>80</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"https"</FONT>, 
+SSLSocketFactory.getSocketFactory(), <FONT 
+color=#6e00aa>443</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SingleClientConnManager 
+mgr <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+SingleClientConnManager(httpParameters, 
+schemeRegistry);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setRedirecting(httpParameters, 
+true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setCookiePolicy(httpParameters, 
+CookiePolicy.BROWSER_COMPATIBILITY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpProtocolParams.setUserAgent(httpParameters, 
+<FONT 
+color=#ff00bf>"apache.http.client"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpclient 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DefaultHttpClient(mgr, 
+httpParameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+httpclient;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> DefaultHttpClient getHttpClient(<FONT 
+color=#0000ff><B>int</B></FONT> timeout) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> timeoutConnection <FONT color=#333399>=</FONT> 
+timeout <FONT color=#333399>==</FONT> <FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT> <FONT color=#333399>?</FONT> <FONT 
+color=#6e00aa>30</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT> <FONT color=#333399>:</FONT> timeout <FONT 
+color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> timeoutSocket <FONT color=#333399>=</FONT> 
+timeout <FONT color=#333399>==</FONT> <FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT> <FONT color=#333399>?</FONT> <FONT 
+color=#6e00aa>35</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT> <FONT color=#333399>:</FONT> timeout <FONT 
+color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> BUFFER_SIZE <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>8192</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>20</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DefaultHttpClient 
+client <FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpParams 
+httpParameters <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+BasicHttpParams();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setConnectionTimeout(httpParameters, 
+timeoutConnection);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setSoTimeout(httpParameters, 
+timeoutSocket);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setSocketBufferSize(httpParameters, 
+BUFFER_SIZE);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SchemeRegistry 
+schemeRegistry <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+SchemeRegistry();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"http"</FONT>, 
+PlainSocketFactory.getSocketFactory(), <FONT 
+color=#6e00aa>80</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"https"</FONT>, 
+SSLSocketFactory.getSocketFactory(), <FONT 
+color=#6e00aa>443</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SingleClientConnManager 
+mgr <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+SingleClientConnManager(httpParameters, 
+schemeRegistry);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setRedirecting(httpParameters, 
+true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setCookiePolicy(httpParameters, 
+CookiePolicy.BROWSER_COMPATIBILITY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpProtocolParams.setUserAgent(httpParameters, 
+<FONT 
+color=#ff00bf>"apache.http.client"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DefaultHttpClient(mgr, 
+httpParameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+client;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+后台请求统一调用接口<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param &lt;T&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+返回的结果数据类型<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+boName<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+BO名称<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+method<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+请求服务方法名<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+param<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+请求参数Map，key一般为string<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+rstClass<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+返回的结果的class<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> T invoke(String 
+boName, String method, Map<FONT color=#333399>&lt;</FONT>String, <FONT 
+color=#333399>?</FONT><FONT color=#333399>&gt;</FONT> param, TypeToken<FONT 
+color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> 
+rstClass)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> MmtClientException 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> invoke(boName, method, param, 
+Constant.REQ_MODE.BO_POST, rstClass, <FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+后台请求统一调用接口<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param &lt;T&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+返回的结果数据类型<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+boName<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+请求服务名称<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+method<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+请求服务方法名<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+param<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+请求参数Map，key一般为string<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+rstClass<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+返回的结果的class<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+req_mode<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* {@link Constant.REQ_MODE 
+&lt;code&gt;Constant.REQ_MODE&lt;/code&gt;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param timeoutSeconds<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+设置接口超时的时间，单位为秒<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> T invoke(String 
+serviceName, String method, Map<FONT color=#333399>&lt;</FONT>String, <FONT 
+color=#333399>?</FONT><FONT color=#333399>&gt;</FONT> param, TypeToken<FONT 
+color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> 
+rstClass,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+req_mode, <FONT color=#0000ff><B>int</B></FONT> timeoutSeconds) <FONT 
+color=#0000ff><B>throws</B></FONT> MmtClientException 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> invoke(serviceName, method, param, req_mode, 
+rstClass, 
+timeoutSeconds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> T invoke(String 
+boName, String method, Map<FONT color=#333399>&lt;</FONT>String, <FONT 
+color=#333399>?</FONT><FONT color=#333399>&gt;</FONT> param, String reqMode, 
+TypeToken<FONT color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> 
+rstClass,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> timeoutSeconds) <FONT 
+color=#0000ff><B>throws</B></FONT> MmtClientException 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DynamicDict dto <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DynamicDict();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dto.setM_ClassName(boName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dto.setM_Method(method);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dto.setM_reqMode(reqMode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dto.setParam(Clazz.convertType(param));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> invoke(dto, rstClass, 
+timeoutSeconds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+后台请求统一调用接口<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> T 
+invoke(DynamicDict dto, TypeToken<FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> rstClass, <FONT color=#0000ff><B>int</B></FONT> 
+timeoutSeconds) <FONT color=#0000ff><B>throws</B></FONT> MmtClientException 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+1.校验参数合法</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (dto <FONT color=#333399>==</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+MmtClientException(<FONT color=#ff00bf>"Mothod:Caller.invoke param dto can not 
+input 
+null!"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+req_mode <FONT color=#333399>=</FONT> 
+dto.getM_reqMode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+class_name <FONT color=#333399>=</FONT> 
+dto.getM_ClassName();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+method_name <FONT color=#333399>=</FONT> 
+dto.getM_Method();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (StringUtil.isEmpty(class_name) <FONT 
+color=#333399>||</FONT> StringUtil.isEmpty(method_name)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+MmtClientException(<FONT color=#ff00bf>"Mothod:Caller.invoke param 
+dto.m_ClassName|dto.m_Method can not input 
+null!"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+2.请求方式分发</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (Constant.REQ_MODE.BO_POST.equals(req_mode) <FONT 
+color=#333399>||</FONT> 
+Constant.REQ_MODE.BO_POST_UN_FILTER.equals(req_mode)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>||</FONT> StringUtil.isEmpty(req_mode)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> invokeJsonPost(dto, rstClass, 
+timeoutSeconds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(Constant.REQ_MODE.SERV_POST.equals(req_mode)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> invokeJsonPost(dto, rstClass, 
+timeoutSeconds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> {<FONT color=#008000>// 
+暂不支持get方式请求</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+UnsupportedOperationException(<FONT color=#ff00bf>"Mothod:Caller.invoke can not 
+Unsupported req_mode is 
+get!"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+post请求封装方法<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> T invokeJsonPost(DynamicDict dto, TypeToken<FONT 
+color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> typeToken, <FONT 
+color=#0000ff><B>int</B></FONT> 
+timeoutSeconds)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> MmtClientException 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DefaultHttpClient client 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity entity2 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPost httpPost <FONT 
+color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T obj2 <FONT 
+color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPost(Constant.getServerPath() <FONT color=#333399>+</FONT> 
+Constant.COMMON_REQ_URL);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+1.参入公共参数</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Caller.setHeader(httpPost, 
+ACCEPT.JSON, 
+dto);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type 
+targetType <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TypeToken<FONT color=#333399>&lt;</FONT>DynamicDict<FONT 
+color=#333399>&gt;</FONT>() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}.getType();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(dto, targetType), <FONT 
+color=#ff00bf>"UTF-8"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setEntity(entity);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (timeoutSeconds <FONT color=#333399>==</FONT> 
+<FONT color=#333399>-</FONT><FONT color=#6e00aa>1</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client 
+<FONT color=#333399>=</FONT> 
+getHttpClient();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client 
+<FONT color=#333399>=</FONT> 
+getHttpClient(timeoutSeconds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response <FONT color=#333399>=</FONT> 
+client.execute(httpPost);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK <FONT color=#333399>&amp;&amp;</FONT> statusCode <FONT 
+color=#333399>!=</FONT> HttpStatus.SC_NO_CONTENT) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity2 
+<FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity2 <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+entity2.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> 
+StringUtil.convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T 
+serviceResult <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;serviceResult 
+<FONT color=#333399>=</FONT> JsonUtil.fromJson(result, 
+typeToken);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (typeToken <FONT color=#333399>!=</FONT> null 
+<FONT color=#333399>&amp;&amp;</FONT> serviceResult <FONT 
+color=#333399>==</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;serviceResult 
+<FONT color=#333399>=</FONT> (T) JsonUtil.fromJson(result, 
+typeToken.getRawType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (serviceResult <FONT color=#333399>==</FONT> 
+null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throwException(result);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj2 
+<FONT color=#333399>=</FONT> 
+serviceResult;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.i(<FONT 
+color=#ff00bf>"Caller Exception"</FONT>, <FONT color=#ff00bf>""</FONT>, 
+e);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (e <FONT color=#0000ff><B>instanceof</B></FONT> 
+HttpHostConnectException) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+MmtClientException(<FONT 
+color=#ff00bf>"网络不可用，或者服务端正在维护中，请稍候再试"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> (e 
+<FONT color=#0000ff><B>instanceof</B></FONT> MMException) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+MmtClientException(((MMException) 
+e).getErrorMessage());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+MmtClientException(<FONT color=#ff00bf>"请求服务器出错:"</FONT> <FONT 
+color=#333399>+</FONT> e.getMessage(), 
+e);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>finally</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (timeoutSeconds <FONT color=#333399>!=</FONT> 
+<FONT color=#333399>-</FONT><FONT color=#6e00aa>1</FONT> <FONT 
+color=#333399>&amp;&amp;</FONT> client <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;client.getConnectionManager().shutdown();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+obj2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+请求头封装<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> setHeader(HttpUriRequest httpUriRequest, 
+String accept) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setHeader(httpUriRequest, 
+accept, null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+请求头封装<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> setHeader(HttpUriRequest httpUriRequest, 
+String accept, DynamicDict dto) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (httpUriRequest <FONT color=#333399>==</FONT> 
+null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+userName <FONT color=#333399>=</FONT> 
+ClientCache.getInstance().getUserName();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+passWord <FONT color=#333399>=</FONT> 
+ClientCache.getInstance().getPassWord();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (dto <FONT color=#333399>!=</FONT> null <FONT 
+color=#333399>&amp;&amp;</FONT> 
+Constant.REQ_MODE.BO_POST_UN_FILTER.equals(dto.getM_reqMode())) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;userName 
+<FONT color=#333399>=</FONT> 
+REQ_MODE.BO_POST_UN_FILTER;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;passWord 
+<FONT color=#333399>=</FONT> 
+REQ_MODE.BO_POST_UN_FILTER;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dto.setM_reqMode(Constant.REQ_MODE.BO_POST);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.addHeader(ParamConst.USER_NAME, 
+userName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.addHeader(ParamConst.PASS_WORD, 
+passWord);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.addHeader(ParamConst.OPER_ID, 
+ClientCache.getInstance().getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.addHeader(ParamConst.OPER_CODE, 
+ClientCache.getInstance().getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+Constant.getConnectType());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// default accept 
+value</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (StringUtil.isEmpty(accept)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;accept 
+<FONT color=#333399>=</FONT> 
+ACCEPT.JSON;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (StringUtil.isEqual(ACCEPT.JSON, accept)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, 
+ACCEPT.JSON);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, 
+ACCEPT.JSON);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(StringUtil.isEqual(ACCEPT.TEXT, accept)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpUriRequest.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, 
+ACCEPT.TEXT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> throwException(String result) <FONT 
+color=#0000ff><B>throws</B></FONT> Exception 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (result <FONT color=#333399>==</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+抛出异常</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"service response 
+error!"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServiceResult<FONT 
+color=#333399>&lt;</FONT>MMException<FONT color=#333399>&gt;</FONT> 
+serviceResultEx <FONT color=#333399>=</FONT> JsonUtil.fromJson(result, <FONT 
+color=#0000ff><B>new</B></FONT> TypeToken<FONT 
+color=#333399>&lt;</FONT>ServiceResult<FONT 
+color=#333399>&lt;</FONT>MMException<FONT color=#333399>&gt;&gt;</FONT>() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (serviceResultEx <FONT color=#333399>!=</FONT> 
+null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> 
+serviceResultEx.getResultObject();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (serviceResultEx <FONT color=#333399>==</FONT> 
+null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"json convert 
+error"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+自动提交入口，用于自动请求后台提供的扩展接口<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param &lt;T&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+method<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+param<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+rstClass<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+timeoutSeconds<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+-1为默认时间，<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+MmtClientException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> T action(String 
+action_code, Map<FONT color=#333399>&lt;</FONT>String, Object<FONT 
+color=#333399>&gt;</FONT> param, TypeToken<FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> rstClass, <FONT color=#0000ff><B>int</B></FONT> 
+timeoutSeconds)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> MmtClientException 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (param <FONT color=#333399>==</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;param 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> HashMap<FONT 
+color=#333399>&lt;</FONT>String, Object<FONT 
+color=#333399>&gt;</FONT>();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;param.put(Action.ACTION_CODE, 
+action_code);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> invoke(Action.CommonBO, Action.ACTION, param, 
+Constant.REQ_MODE.BO_POST, rstClass, 
+timeoutSeconds);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 服务器文件下载到内存卡上的临时文件夹。 
+对应的服务端的路径/mmarket/download/<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param fileName<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+需要下载的文件名<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+useTmpFileIfPossible<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* true to use tmp file if 
+exists or false<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @return 
+内存卡上的文件<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> File 
+getRemoteFile(String fileName, <FONT color=#0000ff><B>boolean</B></FONT> 
+useTmpFileIfPossible) <FONT color=#0000ff><B>throws</B></FONT> 
+MmtClientException {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+REMOTE_SERVER_URL <FONT color=#333399>=</FONT> Constant.getServerUrl() <FONT 
+color=#333399>+</FONT> 
+Constant.COMMON_DOWNLOAD_URL;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClient 
+httpClient <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpGet httpGet <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpGet(REMOTE_SERVER_URL <FONT color=#333399>+</FONT> <FONT 
+color=#ff00bf>"/"</FONT> <FONT color=#333399>+</FONT> 
+fileName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream in 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File tmp <FONT 
+color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FileOutputStream fos 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> fileLength <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>; <FONT color=#008000>// 
+取得文件长度</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> downLoadFilePosition <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; <FONT color=#008000>// 
+已下载大小记录</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File 
+folder <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+File(Constant.SDCARD_ROOT_PATH <FONT color=#333399>+</FONT> 
+Constant.CACHE_FILE_PATH);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (<FONT color=#333399>!</FONT>folder.exists()) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;folder.mkdirs();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> File(folder, 
+fileName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (useTmpFileIfPossible <FONT 
+color=#333399>&amp;&amp;</FONT> tmp.exists()) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+如果临时文件夹中存在，就不用请求服务器了</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+tmp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpClient 
+<FONT color=#333399>=</FONT> getHttpClient(<FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpGet.addHeader(ParamConst.USER_NAME, 
+ClientCache.getInstance().getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpGet.addHeader(ParamConst.PASS_WORD, 
+ClientCache.getInstance().getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpGet.addHeader(ParamConst.OPER_ID, 
+ClientCache.getInstance().getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpGet.addHeader(ParamConst.OPER_CODE, 
+ClientCache.getInstance().getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpGet.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+Constant.getConnectType());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response <FONT color=#333399>=</FONT> 
+httpClient.execute(httpGet);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+MmtClientException(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+httpEntity <FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fileLength 
+<FONT color=#333399>=</FONT> httpEntity.getContentLength(); <FONT 
+color=#008000>// 
+取得文件长度</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in 
+<FONT color=#333399>=</FONT> 
+httpEntity.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fos 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+FileOutputStream(tmp);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>byte</B></FONT>[] buffer <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> <FONT color=#0000ff><B>byte</B></FONT>[<FONT 
+color=#6e00aa>1024</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> byteCount <FONT color=#333399>=</FONT> <FONT 
+color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>while</B></FONT> ((byteCount <FONT color=#333399>=</FONT> 
+in.read(buffer)) <FONT color=#333399>!=</FONT> <FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fos.write(buffer, 
+<FONT color=#6e00aa>0</FONT>, 
+byteCount);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;downLoadFilePosition 
+<FONT color=#333399>+=</FONT> 
+byteCount;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.i(<FONT 
+color=#ff00bf>"Caller download file"</FONT>, <FONT color=#ff00bf>"error occurs 
+while download file:"</FONT> <FONT color=#333399>+</FONT> fileName, 
+e);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+MmtClientException(e.getMessage(), 
+e);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>finally</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (fos <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fos.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (in <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (httpClient <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpClient.getConnectionManager().shutdown();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (IOException e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+如何没进行下载完整</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (fileLength <FONT color=#333399>!=</FONT> 
+downLoadFilePosition) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File 
+folder <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+File(Constant.SDCARD_ROOT_PATH <FONT color=#333399>+</FONT> 
+Constant.CACHE_FILE_PATH);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> File(folder, 
+fileName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp.delete();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tmp 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+tmp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>}</DIV></CODE></DIV></BODY></HTML>

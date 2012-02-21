@@ -1,0 +1,981 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>Caller.java_old</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> com.ztesoft.utils;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.BufferedReader;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.IOException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.InputStream;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.InputStreamReader;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.lang.reflect.Type;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.Map;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.HttpEntity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.HttpResponse;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.HttpStatus;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.ClientProtocolException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.methods.HttpGet;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.methods.HttpPost;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.methods.HttpPut;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.params.CookiePolicy;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.client.params.HttpClientParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.conn.scheme.PlainSocketFactory;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.conn.scheme.Scheme;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.conn.scheme.SchemeRegistry;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.conn.ssl.SSLSocketFactory;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.entity.StringEntity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.impl.client.DefaultHttpClient;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.impl.conn.SingleClientConnManager;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.params.BasicHttpParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.params.HttpConnectionParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.apache.http.params.HttpParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+org.apache.http.params.HttpProtocolParams;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.json.JSONArray;<BR><FONT 
+color=#0000ff><B>import</B></FONT> org.json.JSONObject;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.Log;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> com.google.gson.reflect.TypeToken;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.common.CommonDefine;<BR><BR><FONT 
+color=#008000>/**<BR>&nbsp;*&nbsp;<BR>&nbsp;* 
+httpClient工具类，封装JSON交互协议<BR>&nbsp;*&nbsp;<BR>&nbsp;*/</FONT><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+Caller {<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> String serverUrl <FONT 
+color=#333399>=</FONT> 
+CommonDefine.getServerUrl();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+DefaultHttpClient httpclient <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+httpconnnum <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> String userName <FONT color=#333399>=</FONT> 
+CommonDefine.getUserName();<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> String passWord <FONT color=#333399>=</FONT> 
+CommonDefine.getPassWord();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>final</B></FONT> 
+<FONT color=#0000ff><B>static</B></FONT> Object keyObj <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Object();<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+Object keyObj2 <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> Object();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Singleton 
+HttpClient<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+DefaultHttpClient getHttpShortClient() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DefaultHttpClient 
+httpclient1 <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>synchronized</B></FONT> (keyObj) 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+timeoutConnection <FONT color=#333399>=</FONT> <FONT color=#6e00aa>20</FONT> 
+<FONT color=#333399>*</FONT> <FONT color=#6e00aa>1000</FONT>;<FONT 
+color=#008000>// 
+millisecond</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+timeoutSocket <FONT color=#333399>=</FONT> <FONT color=#6e00aa>30</FONT> <FONT 
+color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+BUFFER_SIZE <FONT color=#333399>=</FONT> <FONT color=#6e00aa>8192</FONT> <FONT 
+color=#333399>*</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpParams 
+httpParameters <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+BasicHttpParams();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setConnectionTimeout(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeoutConnection);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setSoTimeout(httpParameters, 
+timeoutSocket);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setSocketBufferSize(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BUFFER_SIZE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// ConnManagerParams.setMaxTotalConnections(httpParameters, 
+20);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SchemeRegistry 
+schemeRegistry <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+SchemeRegistry();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"http"</FONT>, 
+PlainSocketFactory<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.getSocketFactory(), 
+<FONT 
+color=#6e00aa>80</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"https"</FONT>, 
+SSLSocketFactory<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.getSocketFactory(), 
+<FONT 
+color=#6e00aa>443</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// ClientConnectionManager cm = new 
+ThreadSafeClientConnManager(</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// httpParameters, 
+schemeRegistry);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SingleClientConnManager 
+mgr <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+SingleClientConnManager(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpParameters, 
+schemeRegistry);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setRedirecting(httpParameters, 
+true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setCookiePolicy(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CookiePolicy.BROWSER_COMPATIBILITY);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpProtocolParams.setUserAgent(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#ff00bf>"apache.http.client"</FONT>);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpclient1 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DefaultHttpClient(mgr, 
+httpParameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.setHttpRequestRetryHandler(myRetryHandler);</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+httpclient1;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Singleton 
+HttpClient<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+DefaultHttpClient getHttpClient() 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (null <FONT color=#333399>!=</FONT> httpclient) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+httpclient;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>synchronized</B></FONT> (keyObj) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (httpconnnum <FONT color=#333399>&gt;</FONT> 
+<FONT color=#6e00aa>0</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread.sleep(<FONT 
+color=#6e00aa>5</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (null <FONT color=#333399>!=</FONT> httpclient) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+httpclient;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception ex) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpconnnum<FONT 
+color=#333399>++</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// final int timeoutConnection = 20 * 1000;// 
+millisecond</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+timeoutConnection <FONT color=#333399>=</FONT> <FONT color=#6e00aa>120</FONT> 
+<FONT color=#333399>*</FONT> <FONT color=#6e00aa>1000</FONT>;<FONT 
+color=#008000>// 
+millisecond</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// final int timeoutSocket = 60 * 
+1000;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+timeoutSocket <FONT color=#333399>=</FONT> <FONT color=#6e00aa>300</FONT> <FONT 
+color=#333399>*</FONT> <FONT 
+color=#6e00aa>1000</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+BUFFER_SIZE <FONT color=#333399>=</FONT> <FONT color=#6e00aa>8192</FONT> <FONT 
+color=#333399>*</FONT> <FONT 
+color=#6e00aa>20</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpParams 
+httpParameters <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+BasicHttpParams();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setConnectionTimeout(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;timeoutConnection);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.setSoTimeout(httpParameters, 
+timeoutSocket);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpConnectionParams.setSocketBufferSize(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BUFFER_SIZE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// ConnManagerParams.setMaxTotalConnections(httpParameters, 
+20);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SchemeRegistry 
+schemeRegistry <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+SchemeRegistry();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"http"</FONT>, 
+PlainSocketFactory<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.getSocketFactory(), 
+<FONT 
+color=#6e00aa>80</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;schemeRegistry.register(<FONT 
+color=#0000ff><B>new</B></FONT> Scheme(<FONT color=#ff00bf>"https"</FONT>, 
+SSLSocketFactory<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.getSocketFactory(), 
+<FONT 
+color=#6e00aa>443</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// ClientConnectionManager cm = new 
+ThreadSafeClientConnManager(</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// httpParameters, 
+schemeRegistry);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SingleClientConnManager 
+mgr <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+SingleClientConnManager(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpParameters, 
+schemeRegistry);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setRedirecting(httpParameters, 
+true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpClientParams.setCookiePolicy(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CookiePolicy.BROWSER_COMPATIBILITY);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpProtocolParams.setUserAgent(httpParameters,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#ff00bf>"apache.http.client"</FONT>);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpclient 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DefaultHttpClient(mgr, 
+httpParameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.setHttpRequestRetryHandler(myRetryHandler);</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+httpclient;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param &lt;T&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+clazz<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> T getJson(String url, Class<FONT 
+color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> 
+clazz)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url <FONT 
+color=#333399>=</FONT> CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpGet httpget <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpGet(url);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response <FONT 
+color=#333399>=</FONT> 
+getHttpClient().execute(httpget);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T 
+obj <FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity entity 
+<FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+entity.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> 
+StringUtil.convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj 
+<FONT color=#333399>=</FONT> JsonUtil.fromJson(result, 
+clazz);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity.consumeContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.getConnectionManager().shutdown();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+obj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param &lt;T&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+token<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Type targetType = new 
+TypeToken&lt;List&lt;Contact&gt;&gt;(){};<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> T getJson(String url, TypeToken<FONT 
+color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> 
+token)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url <FONT 
+color=#333399>=</FONT> CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpGet httpget <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpGet(url);Log.i(<FONT color=#ff00bf>"url"</FONT>, 
+url);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response <FONT 
+color=#333399>=</FONT> 
+getHttpClient().execute(httpget);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T 
+obj <FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity entity 
+<FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream 
+<FONT color=#333399>=</FONT> 
+entity.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> <FONT 
+color=#ff00bf>""</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result 
+<FONT color=#333399>=</FONT> 
+StringUtil.convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception ex) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity.consumeContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj 
+<FONT color=#333399>=</FONT> JsonUtil.fromJson(result, 
+token);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception ex2) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> 
+ex2;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>finally</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// try 
+{</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (instream <FONT color=#333399>!=</FONT> null) 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.getConnectionManager().shutdown();</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// } catch (Exception ex) 
+{</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+}</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+obj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> String getText(String url) <FONT 
+color=#0000ff><B>throws</B></FONT> Exception 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url <FONT 
+color=#333399>=</FONT> CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String result <FONT 
+color=#333399>=</FONT> <FONT 
+color=#ff00bf>""</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpGet 
+httpget <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpGet(url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"text/plain"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response <FONT 
+color=#333399>=</FONT> 
+getHttpShortClient().execute(httpget);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+entity.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result 
+<FONT color=#333399>=</FONT> 
+StringUtil.convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity.consumeContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+obj<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+targetType<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Type targetType = new 
+TypeToken&lt;List&lt;Contact&gt;&gt;() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+}.getType();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> HttpResponse putJson(String url, Object 
+obj,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type 
+targetType) <FONT color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPut httpPut <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPut(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(obj, 
+targetType));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.setEntity(entity);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response <FONT 
+color=#333399>=</FONT> 
+httpclient.execute(httpPut);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+HttpPut<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+data<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+ClientProtocolException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> HttpResponse putJson(String url, Object 
+obj)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPut httpPut <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPut(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(obj));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.setEntity(entity);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response <FONT 
+color=#333399>=</FONT> 
+httpclient.execute(httpPut);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPut.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+obj<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> HttpResponse postJosn(String url, Object 
+obj)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPost httpPost <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPost(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(obj), <FONT 
+color=#ff00bf>"UTF-8"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setEntity(entity);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response <FONT color=#333399>=</FONT> 
+getHttpClient().execute(httpPost);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+obj<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+targetType<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Type targetType = new 
+TypeToken&lt;List&lt;Contact&gt;&gt;() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+}.getType();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> HttpResponse postJosn(String url, Object 
+obj,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type 
+targetType) <FONT color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPost httpPost <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPost(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(obj, 
+targetType),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#ff00bf>"UTF-8"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setEntity(entity);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response <FONT color=#333399>=</FONT> 
+getHttpClient().execute(httpPost);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+obj<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+targetType<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Type targetType = new 
+TypeToken&lt;List&lt;Contact&gt;&gt;() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+}.getType();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> T postJosn(String url, Object 
+obj,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type 
+targetType, Class<FONT color=#333399>&lt;</FONT>T<FONT color=#333399>&gt;</FONT> 
+rstClass) <FONT color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPost httpPost <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPost(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(obj, 
+targetType),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#ff00bf>"UTF-8"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setEntity(entity);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response <FONT color=#333399>=</FONT> 
+getHttpClient().execute(httpPost);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T 
+obj2 <FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity entity2 
+<FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+entity2.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> 
+StringUtil.convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj2 
+<FONT color=#333399>=</FONT> JsonUtil.fromJson(result, 
+rstClass);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity2.consumeContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.getConnectionManager().shutdown();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+obj2;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+obj<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+targetType<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Type targetType = new 
+TypeToken&lt;List&lt;Contact&gt;&gt;() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+}.getType();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> T postJosn(String url, Object 
+obj,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type 
+targetType, TypeToken<FONT color=#333399>&lt;</FONT>T<FONT 
+color=#333399>&gt;</FONT> typeToken) <FONT color=#0000ff><B>throws</B></FONT> 
+Exception {<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPost 
+httpPost <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPost(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(obj, 
+targetType),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#ff00bf>"UTF-8"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setEntity(entity);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response <FONT color=#333399>=</FONT> 
+getHttpClient().execute(httpPost);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T 
+obj2 <FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity entity2 
+<FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+entity2.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> 
+StringUtil.convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj2 
+<FONT color=#333399>=</FONT> JsonUtil.fromJson(result, 
+typeToken);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity2.consumeContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.getConnectionManager().shutdown();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+obj2;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+obj<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+targetType<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Type targetType = new 
+TypeToken&lt;List&lt;Contact&gt;&gt;() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+}.getType();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @throws 
+Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> Object connectWithPostObject(String url, 
+Object 
+obj,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type 
+targetType) <FONT color=#0000ff><B>throws</B></FONT> Exception 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpPost httpPost <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpPost(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"content-type"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setHeader(<FONT 
+color=#ff00bf>"Accept"</FONT>, <FONT 
+color=#ff00bf>"application/json"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+StringEntity(JsonUtil.toJson(obj, 
+targetType),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#ff00bf>"UTF-8"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.setEntity(entity);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response <FONT color=#333399>=</FONT> 
+getHttpClient().execute(httpPost);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+statusCode <FONT color=#333399>=</FONT> 
+response.getStatusLine().getStatusCode();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (statusCode <FONT color=#333399>!=</FONT> 
+HttpStatus.SC_OK) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Exception(<FONT color=#ff00bf>"HttpStatusCode:"</FONT> <FONT 
+color=#333399>+</FONT> 
+statusCode);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JSONObject 
+jsonObj <FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity entity2 
+<FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+entity2.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> 
+StringUtil.convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jsonObj 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+JSONObject(result);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity2.consumeContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.getConnectionManager().shutdown();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpPost.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+jsonObj;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Get请求获得JSONArray对象， 
+为兼容原来使用RestfullClient的代码<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> Object connectWithGetArray(String url) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpGet httpget <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpGet(CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response 
+<FONT color=#333399>=</FONT> 
+getHttpClient().execute(httpget);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+entity.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> 
+convertStreamToString(instream);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JSONArray 
+json <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+JSONArray(result);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+json;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>catch</B></FONT> (Exception e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>finally</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Get请求获得JSONObject对象， 
+为兼容原来使用RestfullClient的代码<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param url<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> Object connectWithGetObject(String url) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpGet httpget <FONT 
+color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url <FONT 
+color=#333399>=</FONT> CommonDefine.getServerUrl() <FONT color=#333399>+</FONT> 
+url;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> n <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+HttpGet(url);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object json 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"userName"</FONT>, 
+CommonDefine.getUserName());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"passWord"</FONT>, 
+CommonDefine.getPassWord());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operId"</FONT>, 
+CommonDefine.getStaffId());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"connectType"</FONT>, 
+CommonDefine.getConnectType());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.addHeader(<FONT 
+color=#ff00bf>"operCode"</FONT>, 
+CommonDefine.getStaffCode());<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpResponse 
+response;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputStream 
+instream <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> l1 <FONT color=#333399>=</FONT> 
+System.currentTimeMillis();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response 
+<FONT color=#333399>=</FONT> 
+getHttpClient().execute(httpget);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> l2 <FONT color=#333399>=</FONT> 
+System.currentTimeMillis();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(<FONT 
+color=#ff00bf>"ttttime="</FONT> <FONT color=#333399>+</FONT> (l2 <FONT 
+color=#333399>-</FONT> 
+l1));<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpEntity 
+entity <FONT color=#333399>=</FONT> 
+response.getEntity();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (entity <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream 
+<FONT color=#333399>=</FONT> 
+entity.getContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+result <FONT color=#333399>=</FONT> 
+convertStreamToString(instream);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+JSONObject(result);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (json <FONT color=#333399>==</FONT> 
+null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;json 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+JSONArray(result);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;entity.consumeContent();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+json;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception e) 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>finally</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (instream <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (IOException e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// TODO Auto-generated catch 
+block</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instream 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (httpget <FONT color=#333399>!=</FONT> 
+null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget.abort();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+getHttpClient().getConnectionManager().shutdown();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+httpclient.getConnectionManager().shutdown();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;httpget 
+<FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+String convertStreamToString(InputStream is) 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StringBuilder sb <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> StringBuilder(<FONT 
+color=#6e00aa>8192</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>20</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+line <FONT color=#333399>=</FONT> 
+null;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// InputStreamReader isr = new 
+InputStreamReader(is);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// ByteArrayInputStream bis = new 
+ByteArrayInputStream(is);</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// byte[] chr = new 
+byte[1024];</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// int bLen = 
+1024;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// int n = 
+0;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// int offset = 
+0;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedReader 
+reader <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// 
+GZIPInputStream gzin = 
+null;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// gzin = new 
+GZIPInputStream(is);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reader 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+BufferedReader(<FONT color=#0000ff><B>new</B></FONT> InputStreamReader(is), 
+<FONT color=#6e00aa>8192</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>20</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/*<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+while ((n = is.read(chr, offset, bLen)) &gt; 0) { if (offset == 0) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+sb = new StringBuilder(8192 * 20); } offset += n; // bLen = 
+n;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+bLen += n; String line = new String(chr, 0, n); sb.append(line); 
+}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>while</B></FONT> ((line <FONT color=#333399>=</FONT> 
+reader.readLine()) <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sb.append(line);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// String str = 
+new</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+String(sb.toString().getBytes("ISO-8859-1"),"GBK");</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+Log.i("",str);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>catch</B></FONT> (IOException e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (ArrayIndexOutOfBoundsException ex) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ex.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>finally</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (reader <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reader.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/*<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+if(gzin != null) { gzin.close(); 
+}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (is <FONT color=#333399>!=</FONT> 
+null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is.close();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reader 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// gzin = 
+null;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (IOException e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+sb.toString();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>}</DIV></CODE></BODY></HTML>

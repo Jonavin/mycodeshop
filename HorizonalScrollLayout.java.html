@@ -1,0 +1,390 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>HorizonalScrollLayout.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.Context;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Handler;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Message;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.AttributeSet;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.Log;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.MotionEvent;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.VelocityTracker;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.View;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.ViewConfiguration;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.LinearLayout;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.Scroller;<BR><BR><FONT 
+color=#008000>/**<BR>&nbsp;* 包裹在该布局内部的子视图可以左右滑动&lt;br&gt;<BR>&nbsp;* @author 
+http://blog.csdn.net/Yao_GUET date: 2011-05-04<BR>&nbsp;*/</FONT><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+HorizonalScrollLayout <FONT color=#0000ff><B>extends</B></FONT> LinearLayout 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+通过Handler将滑屏结果通知使用该滑屏控件的Activity&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+必须先调用&lt;br&gt;&lt;code&gt;public void setHandler(Handler handler) 
+&lt;/code&gt;&lt;br&gt;来设置handler.返回的消息为:&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+&lt;code&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Message msg = new 
+Message();&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.what 
+= 
+ON_SCROLL_CHANGED_MESSAGE_WHAT;&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.arg1 
+= 
+whichScreen;//滑到的目标屏幕索引（0为第一个屏幕）&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler.sendMessage(msg);&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+&lt;/code&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+ON_SCROLL_CHANGED_MESSAGE_WHAT <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>2087</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> String TAG <FONT color=#333399>=</FONT> 
+<FONT 
+color=#ff00bf>"HorizonalScrollLayout"</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Scroller 
+mScroller;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+VelocityTracker mVelocityTracker;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+mCurScreen;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>int</B></FONT> mDefaultScreen <FONT 
+color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+TOUCH_STATE_REST <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+TOUCH_STATE_SCROLLING <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+SNAP_VELOCITY <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>600</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+mTouchState <FONT color=#333399>=</FONT> 
+TOUCH_STATE_REST;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+mTouchSlop;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+<FONT color=#0000ff><B>float</B></FONT> 
+mLastMotionX;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>float</B></FONT> 
+mLastMotionY;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;Handler handler 
+;<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>public</B></FONT> 
+HorizonalScrollLayout(Context context, AttributeSet attrs) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>(context, 
+attrs);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mScroller <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Scroller(context);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mCurScreen 
+<FONT color=#333399>=</FONT> 
+mDefaultScreen;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mTouchSlop 
+<FONT color=#333399>=</FONT> 
+ViewConfiguration.get(getContext()).getScaledTouchSlop();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>protected</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onLayout(<FONT color=#0000ff><B>boolean</B></FONT> changed, <FONT 
+color=#0000ff><B>int</B></FONT> l, <FONT color=#0000ff><B>int</B></FONT> t, 
+<FONT color=#0000ff><B>int</B></FONT> r, <FONT color=#0000ff><B>int</B></FONT> 
+b) {<BR><FONT color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if 
+(changed) { 
+//如果不注释掉，里面的ListView显示出不来</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> childLeft <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+childCount <FONT color=#333399>=</FONT> 
+getChildCount();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> childCount; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> View childView <FONT color=#333399>=</FONT> 
+getChildAt(i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (childView.getVisibility() <FONT 
+color=#333399>!=</FONT> View.GONE) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+childWidth <FONT color=#333399>=</FONT> 
+childView.getMeasuredWidth();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;childView.layout(childLeft, 
+<FONT color=#6e00aa>0</FONT>, childLeft <FONT color=#333399>+</FONT> childWidth, 
+childView<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.getMeasuredHeight());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;childLeft 
+<FONT color=#333399>+=</FONT> 
+childWidth;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>protected</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onMeasure(<FONT color=#0000ff><B>int</B></FONT> widthMeasureSpec, <FONT 
+color=#0000ff><B>int</B></FONT> heightMeasureSpec) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>super</B></FONT>.onMeasure(widthMeasureSpec, 
+heightMeasureSpec);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> width 
+<FONT color=#333399>=</FONT> 
+MeasureSpec.getSize(widthMeasureSpec);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+widthMode <FONT color=#333399>=</FONT> 
+MeasureSpec.getMode(widthMeasureSpec);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (widthMode <FONT color=#333399>!=</FONT> 
+MeasureSpec.EXACTLY) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+IllegalStateException(<FONT color=#ff00bf>"ScrollLayout only canmCurScreen run 
+at EXACTLY 
+mode!"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+heightMode <FONT color=#333399>=</FONT> 
+MeasureSpec.getMode(heightMeasureSpec);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (heightMode <FONT color=#333399>!=</FONT> 
+MeasureSpec.EXACTLY) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+IllegalStateException(<FONT color=#ff00bf>"ScrollLayout only can run at EXACTLY 
+mode!"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// The children are given the same width and height as the 
+scrollLayout</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> count 
+<FONT color=#333399>=</FONT> 
+getChildCount();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> count; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getChildAt(i).measure(widthMeasureSpec, 
+heightMeasureSpec);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Log.e(TAG, "moving to screen 
+"+mCurScreen);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scrollTo(mCurScreen 
+<FONT color=#333399>*</FONT> width, <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* According to the position 
+of current layout scroll to the destination<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+page.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+snapToDestination() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+screenWidth <FONT color=#333399>=</FONT> 
+getWidth();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+destScreen <FONT color=#333399>=</FONT> (getScrollX() <FONT 
+color=#333399>+</FONT> screenWidth <FONT color=#333399>/</FONT> <FONT 
+color=#6e00aa>2</FONT>) <FONT color=#333399>/</FONT> 
+screenWidth;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;snapToScreen(destScreen);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+snapToScreen(<FONT color=#0000ff><B>int</B></FONT> whichScreen) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000>// get 
+the valid layout 
+page</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;whichScreen <FONT 
+color=#333399>=</FONT> Math.max(<FONT color=#6e00aa>0</FONT>, 
+Math.min(whichScreen, getChildCount() <FONT color=#333399>-</FONT> <FONT 
+color=#6e00aa>1</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (getScrollX() <FONT color=#333399>!=</FONT> 
+(whichScreen <FONT color=#333399>*</FONT> getWidth())) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> delta 
+<FONT color=#333399>=</FONT> whichScreen <FONT color=#333399>*</FONT> getWidth() 
+<FONT color=#333399>-</FONT> 
+getScrollX();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mScroller.startScroll(getScrollX(), 
+<FONT color=#6e00aa>0</FONT>, delta, <FONT color=#6e00aa>0</FONT>, 
+Math.abs(delta));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mCurScreen 
+<FONT color=#333399>=</FONT> 
+whichScreen;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;invalidate(); 
+<FONT color=#008000>// Redraw the 
+layout</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(handler<FONT color=#333399>!=</FONT> 
+null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message 
+msg <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Message();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.what 
+<FONT color=#333399>=</FONT> 
+ON_SCROLL_CHANGED_MESSAGE_WHAT;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.arg1 
+<FONT color=#333399>=</FONT> 
+whichScreen;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler.sendMessage(msg);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setToScreen(<FONT color=#0000ff><B>int</B></FONT> whichScreen) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;whichScreen <FONT 
+color=#333399>=</FONT> Math.max(<FONT color=#6e00aa>0</FONT>, 
+Math.min(whichScreen, getChildCount() <FONT color=#333399>-</FONT> <FONT 
+color=#6e00aa>1</FONT>));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mCurScreen 
+<FONT color=#333399>=</FONT> 
+whichScreen;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scrollTo(whichScreen 
+<FONT color=#333399>*</FONT> getWidth(), <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;invalidate();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+getCurScreen() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+mCurScreen;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+computeScroll() {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (mScroller.computeScrollOffset()) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scrollTo(mScroller.getCurrX(), 
+mScroller.getCurrY());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;postInvalidate();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+onTouchEvent(MotionEvent event) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (mVelocityTracker <FONT color=#333399>==</FONT> 
+null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mVelocityTracker 
+<FONT color=#333399>=</FONT> 
+VelocityTracker.obtain();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mVelocityTracker.addMovement(event);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> action 
+<FONT color=#333399>=</FONT> 
+event.getAction();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>float</B></FONT> x 
+<FONT color=#333399>=</FONT> 
+event.getX();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>float</B></FONT> y 
+<FONT color=#333399>=</FONT> 
+event.getY();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>switch</B></FONT> (action) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_DOWN<FONT 
+color=#333399>:</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.e(TAG, 
+"event 
+down!");</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (<FONT 
+color=#333399>!</FONT>mScroller.isFinished()) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mScroller.abortAnimation();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mLastMotionX 
+<FONT color=#333399>=</FONT> 
+x;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_MOVE<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> deltaX <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>) (mLastMotionX <FONT color=#333399>-</FONT> 
+x);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mLastMotionX 
+<FONT color=#333399>=</FONT> 
+x;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scrollBy(deltaX, 
+<FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_UP<FONT 
+color=#333399>:</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.e(TAG, 
+"event : 
+up");</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// if (mTouchState == TOUCH_STATE_SCROLLING) 
+{</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> VelocityTracker velocityTracker <FONT 
+color=#333399>=</FONT> 
+mVelocityTracker;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;velocityTracker.computeCurrentVelocity(<FONT 
+color=#6e00aa>1000</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> velocityX <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>) velocityTracker.getXVelocity();<BR><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.e(TAG, 
+"velocityX:" + 
+velocityX);</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (velocityX <FONT color=#333399>&gt;</FONT> 
+SNAP_VELOCITY <FONT color=#333399>&amp;&amp;</FONT> mCurScreen <FONT 
+color=#333399>&gt;</FONT> <FONT color=#6e00aa>0</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Fling enough to move left</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.e(TAG, 
+"snap 
+left");</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;snapToScreen(mCurScreen 
+<FONT color=#333399>-</FONT> <FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(velocityX <FONT color=#333399>&lt;</FONT> <FONT 
+color=#333399>-</FONT>SNAP_VELOCITY <FONT color=#333399>&amp;&amp;</FONT> 
+mCurScreen <FONT color=#333399>&lt;</FONT> getChildCount() <FONT 
+color=#333399>-</FONT> <FONT color=#6e00aa>1</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// Fling enough to move right</FONT><BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.e(TAG, 
+"snap 
+right");</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;snapToScreen(mCurScreen 
+<FONT color=#333399>+</FONT> <FONT 
+color=#6e00aa>1</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;snapToDestination();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (mVelocityTracker <FONT color=#333399>!=</FONT> 
+null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mVelocityTracker.recycle();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mVelocityTracker 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+}</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mTouchState 
+<FONT color=#333399>=</FONT> 
+TOUCH_STATE_REST;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_CANCEL<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mTouchState 
+<FONT color=#333399>=</FONT> 
+TOUCH_STATE_REST;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+setHandler(Handler handler) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.handler <FONT color=#333399>=</FONT> 
+handler;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>boolean</B></FONT> 
+onInterceptTouchEvent(MotionEvent ev) {<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.e(TAG, 
+"onInterceptTouchEvent-slop:" + 
+mTouchSlop);</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> action 
+<FONT color=#333399>=</FONT> 
+ev.getAction();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> ((action <FONT color=#333399>==</FONT> 
+MotionEvent.ACTION_MOVE) <FONT color=#333399>&amp;&amp;</FONT> (mTouchState 
+<FONT color=#333399>!=</FONT> TOUCH_STATE_REST)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>float</B></FONT> x 
+<FONT color=#333399>=</FONT> 
+ev.getX();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>float</B></FONT> y 
+<FONT color=#333399>=</FONT> 
+ev.getY();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>switch</B></FONT> (action) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_MOVE<FONT 
+color=#333399>:</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/*<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+2011.12.29&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+如果内部的子视图有ScrollView，当用户在ScrollView上下滑动的时候，判断如果Y轴变化值大于X轴变化的1.2倍，就不要消费这个事件了<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+否则会导致用户本来是想上下滑动ScrollView 
+结果这个滑动事件被本视图吸收了，变为左右滑动<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> deltaX <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>) (mLastMotionX <FONT color=#333399>-</FONT> 
+x);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> deltaY <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>) (mLastMotionY <FONT color=#333399>-</FONT> 
+y);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(Math.abs(deltaY) <FONT color=#333399>&gt;</FONT> 
+Math.abs(deltaX <FONT color=#333399>*</FONT> <FONT color=#6e00aa>1</FONT>.<FONT 
+color=#6e00aa>2</FONT>)){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/*<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+=========================================<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> xDiff 
+<FONT color=#333399>=</FONT> (<FONT color=#0000ff><B>int</B></FONT>) 
+Math.abs(mLastMotionX <FONT color=#333399>-</FONT> 
+x);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (xDiff <FONT color=#333399>&gt;</FONT> 
+mTouchSlop) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mTouchState 
+<FONT color=#333399>=</FONT> 
+TOUCH_STATE_SCROLLING;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_DOWN<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mLastMotionX 
+<FONT color=#333399>=</FONT> 
+x;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mLastMotionY 
+<FONT color=#333399>=</FONT> 
+y;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mTouchState 
+<FONT color=#333399>=</FONT> mScroller.isFinished() <FONT color=#333399>?</FONT> 
+TOUCH_STATE_REST <FONT color=#333399>:</FONT> 
+TOUCH_STATE_SCROLLING;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_CANCEL<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>case</B></FONT> MotionEvent.ACTION_UP<FONT 
+color=#333399>:</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mTouchState 
+<FONT color=#333399>=</FONT> 
+TOUCH_STATE_REST;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>break</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> mTouchState <FONT color=#333399>!=</FONT> 
+TOUCH_STATE_REST;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>}</DIV></CODE></BODY></HTML>

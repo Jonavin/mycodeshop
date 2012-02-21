@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>StringUtil.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.BufferedReader;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.IOException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.InputStream;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.io.InputStreamReader;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.Map;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.zip.GZIPInputStream;<BR><BR><FONT 
+color=#008000>/**<BR>&nbsp;* 
+字符串工具类<BR>&nbsp;*&nbsp;<BR>&nbsp;*&nbsp;<BR>&nbsp;*/</FONT><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+StringUtil {<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param is<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+String convertStreamToString(InputStream is) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String line <FONT 
+color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;StringBuilder sb <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> StringBuilder(<FONT 
+color=#6e00aa>8192</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>20</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedReader 
+reader <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reader 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+BufferedReader(<FONT color=#0000ff><B>new</B></FONT> InputStreamReader(is),<FONT 
+color=#6e00aa>8192</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>20</FONT>);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>while</B></FONT> ((line <FONT color=#333399>=</FONT> 
+reader.readLine()) <FONT color=#333399>!=</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sb.append(line);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (IOException e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>finally</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(reader<FONT color=#333399>!=</FONT>null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reader.close();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(is <FONT color=#333399>!=</FONT> 
+null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is.close();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reader<FONT 
+color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is 
+<FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (IOException e) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.printStackTrace();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+sb.toString();<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>boolean</B></FONT> isNotEmpty(String string) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> string <FONT color=#333399>!=</FONT> null 
+<FONT color=#333399>&amp;&amp;</FONT> string.length() <FONT 
+color=#333399>&gt;</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>boolean</B></FONT> isEmpty(String string) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> string <FONT color=#333399>==</FONT> null 
+<FONT color=#333399>||</FONT> string.length() <FONT color=#333399>==</FONT> 
+<FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>boolean</B></FONT> isEqual(String o, String 
+c){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(StringUtil.isEmpty(o)){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o 
+<FONT color=#333399>=</FONT> <FONT 
+color=#ff00bf>""</FONT>;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(StringUtil.isEmpty(c)){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c 
+<FONT color=#333399>=</FONT> <FONT 
+color=#ff00bf>""</FONT>;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+o.equals(c);&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+String[] split(String texts, String seperator) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String [] results<FONT 
+color=#333399>=</FONT><FONT color=#0000ff><B>new</B></FONT> String[<FONT 
+color=#6e00aa>0</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(texts<FONT 
+color=#333399>==</FONT>null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+results;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+texts.split(seperator);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+String getValueStr(Map dateData, String key) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String value<FONT 
+color=#333399>=</FONT><FONT 
+color=#ff00bf>""</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(dateData<FONT color=#333399>==</FONT>null){<FONT 
+color=#0000ff><B>return</B></FONT> 
+value;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value<FONT 
+color=#333399>=</FONT>(String)dateData.get(key);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(value<FONT 
+color=#333399>==</FONT>null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value<FONT 
+color=#333399>=</FONT> <FONT 
+color=#ff00bf>""</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;* @Title: 
+isIndexOf<BR>&nbsp;&nbsp;&nbsp;&nbsp;* @Description: 
+判断包含关系<BR>&nbsp;&nbsp;&nbsp;&nbsp;* @param str 源字符串<BR>&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param subStr 子字符串<BR>&nbsp;&nbsp;&nbsp;&nbsp;* @param splitFlag 
+源字符串的分隔标志<BR>&nbsp;&nbsp;&nbsp;&nbsp;* @return true 包含 false 
+不包含<BR>&nbsp;&nbsp;&nbsp;&nbsp;* 
+@throws<BR>&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>boolean</B></FONT> isIndexOf(String str, String subStr, 
+String splitFlag) {<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (isEmpty(str)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//子字符串为空,认为包含</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (isEmpty(subStr)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (null <FONT color=#333399>==</FONT> splitFlag) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;splitFlag 
+<FONT color=#333399>=</FONT> <FONT 
+color=#ff00bf>""</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+tmpStr <FONT color=#333399>=</FONT> splitFlag<FONT 
+color=#333399>+</FONT>str<FONT 
+color=#333399>+</FONT>splitFlag;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+tmpSubStr <FONT color=#333399>=</FONT> splitFlag<FONT 
+color=#333399>+</FONT>subStr<FONT 
+color=#333399>+</FONT>splitFlag;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> tmpStr.indexOf(tmpSubStr) <FONT 
+color=#333399>&gt;</FONT><FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>}</DIV></CODE></BODY></HTML>

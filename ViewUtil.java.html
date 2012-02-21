@@ -1,0 +1,876 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>ViewUtil.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util;&nbsp;<BR><BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.HashMap;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.Map;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.app.Activity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.content.Context;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.graphics.Color;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Environment;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.text.TextPaint;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.text.TextUtils;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.DisplayMetrics;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.Gravity;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.View;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.ViewGroup;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.view.WindowManager;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+android.view.View.OnFocusChangeListener;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.ArrayAdapter;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.Button;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.EditText;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.LinearLayout;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.PopupWindow;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.ProgressBar;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.Spinner;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.widget.TextView;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> com.ztesoft.mobile.trunk.R;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.model.MmPageAreaFieldVO;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.widgets.CompKeyboard;<BR><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>class</B></FONT> ViewUtil 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 创建EditText 
+&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+LinearLayout布局<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+hint<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+输入框内的提示文字<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> EditText createEditText(Context context, 
+String hint) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+linePrm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams.WRAP_CONTENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.weight 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// linePrm.leftMargin = 
+VIEW_LEFT_MARGIN;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// linePrm.rightMargin = 
+VIEW_RIGHT_MARGIN;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// linePrm.gravity = 
+Gravity.CENTER_VERTICAL;</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> createEditText(context, hint, 
+linePrm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 创建EditText 
+&lt;br/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+hint<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+输入框内的提示文字<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+prm<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 布局参数<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> EditText createEditText(Context context, 
+String hint, ViewGroup.LayoutParams prm) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EditText edt <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+EditText(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setHint(hint);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.comp_edittext_login));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+edt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+创建TextView<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+text<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 显示文本<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param prm<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+布局参数<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> TextView createTextView(Context context, 
+String text) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+linePrm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams.WRAP_CONTENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> createTextView(context, text, 
+linePrm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+创建TextView<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+text<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 显示文本<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param prm<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+布局参数<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> TextView createTextView(Context context, 
+String text, ViewGroup.LayoutParams prm) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView tv <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TextView(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tv.setText(text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tv.setTextColor(context.getResources().getColor(R.color.text_color_listview));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tv.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+tv;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> EditText createEditText(Context context, 
+String tag, String hint) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EditText edt <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+EditText(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.comp_edittext_login));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setHint(hint);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.comp_edittext_login));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+prm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.weight 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.leftMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.rightMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;edt.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+edt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+查询按钮<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+txt<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Button createButtonTop(Context context, 
+String tag, String txt) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+prm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.rightMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> createButtonTop(context, tag, txt, 
+prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+查询按钮<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+txt<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Button createButtonTop(Context context, 
+String tag, String txt, ViewGroup.LayoutParams prm) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Button btn <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Button(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setText(txt);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.comp_button_top));<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+btn;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+查询按钮<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+txt<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Button createButton(Context context, 
+String tag, String txt, ViewGroup.LayoutParams prm,<FONT 
+color=#0000ff><B>int</B></FONT> resources) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Button btn <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Button(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setText(txt);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setBackgroundResource(resources);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+btn;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+界面下方按钮<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+text<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Button createButtonBottom(Context 
+context, String tag, String text) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+linePrm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.gravity 
+<FONT color=#333399>=</FONT> 
+Gravity.CENTER_VERTICAL;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.weight 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.leftMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>20</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.rightMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>20</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.topMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.bottomMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;linePrm.gravity 
+<FONT color=#333399>=</FONT> 
+Gravity.CENTER_HORIZONTAL;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> createButtonBottom(context, tag, text, 
+linePrm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+界面下方按钮<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+text<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+prm<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Button createButtonBottom(Context 
+context, String tag, String text, ViewGroup.LayoutParams prm) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Button btn <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Button(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setText(text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.comp_button_bottom));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+btn;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+按钮<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+text<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+prm<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Button createButtonLogin(Context 
+context, String tag, String text, ViewGroup.LayoutParams prm) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Button btn <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Button(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setText(text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setTextColor(context.getResources().getColor(R.color.text_color_white));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.comp_button_login));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+btn;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+按钮<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+text<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+prm<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Button createButtonGold(Context context, 
+String tag, String text, ViewGroup.LayoutParams prm) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Button btn <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Button(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setText(text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.comp_button_netconfig));<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+btn;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+下拉框<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+tag<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+valueAndName<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Spinner createSpinner(Context context, 
+String tag, String[][] valueAndName) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spinner spn <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Spinner(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;spn.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;spn.setBackgroundResource(R.drawable.comp_spinner_select);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ArrayAdapter<FONT 
+color=#333399>&lt;</FONT>String<FONT color=#333399>&gt;</FONT> adapter <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> ArrayAdapter<FONT 
+color=#333399>&lt;</FONT>String<FONT color=#333399>&gt;</FONT>(context, 
+R.drawable.comp_spinner_text_single_line, valueAndName[<FONT 
+color=#6e00aa>1</FONT>]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adapter.setDropDownViewResource(R.drawable.comp_spinner_text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;spn.setAdapter(adapter);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+prm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.leftMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.rightMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;spn.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+spn;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+创建表单的行<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> LinearLayout createRow4Form(Context 
+context, String tag) 
+{&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout row 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;row.setTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+prm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.topMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.bottomMargin 
+<FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>5</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;row.setLayoutParams(prm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+row;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> Map<FONT 
+color=#333399>&lt;</FONT>String, Object<FONT color=#333399>&gt;</FONT> 
+extractFormValueByTag(ViewGroup form, String ... viewTags) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map<FONT 
+color=#333399>&lt;</FONT>String, Object<FONT color=#333399>&gt;</FONT> map <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> HashMap<FONT 
+color=#333399>&lt;</FONT>String, Object<FONT 
+color=#333399>&gt;</FONT>();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT>(String tag <FONT color=#333399>:</FONT> 
+viewTags) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View 
+view <FONT color=#333399>=</FONT> 
+form.findViewWithTag(tag);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(view <FONT color=#0000ff><B>instanceof</B></FONT> 
+TextView) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+value <FONT color=#333399>=</FONT> ((TextView) 
+view).getText().toString();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map.put(tag, 
+value);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT>(view 
+<FONT color=#0000ff><B>instanceof</B></FONT> Spinner) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Spinner 
+spn <FONT color=#333399>=</FONT> 
+(Spinner)view;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> pos <FONT color=#333399>=</FONT> 
+spn.getSelectedItemPosition();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;map.put(tag, 
+pos);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+map;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+translateSpinnerPositionToValue(Map<FONT color=#333399>&lt;</FONT>String, 
+Object<FONT color=#333399>&gt;</FONT> dataMap, String key, String[] valueArr) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> position <FONT color=#333399>=</FONT> 
+(Integer)dataMap.get(key);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dataMap.put(key, 
+valueArr[position]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> PopupWindow createPopupWindow(Context 
+context, String title, View mainView, <FONT color=#0000ff><B>float</B></FONT> 
+widthPercent,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>float</B></FONT> heightPercent, Button... buttons) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mainView.requestFocus();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Activity 
+activity <FONT color=#333399>=</FONT> (Activity) 
+context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+设置弹出窗口长宽</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DisplayMetrics 
+dm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DisplayMetrics();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activity.getWindowManager().getDefaultDisplay().getMetrics(dm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> width <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>) (dm.widthPixels <FONT color=#333399>*</FONT> 
+widthPercent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> height <FONT color=#333399>=</FONT> (<FONT 
+color=#0000ff><B>int</B></FONT>) (dm.heightPixels <FONT color=#333399>*</FONT> 
+heightPercent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> btnWidth <FONT color=#333399>=</FONT> width 
+<FONT color=#333399>/</FONT> <FONT 
+color=#6e00aa>3</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+获取弹出窗口布局</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View 
+contentView <FONT color=#333399>=</FONT> 
+activity.getLayoutInflater().inflate(R.layout.popup_window, null, 
+false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+设置弹出窗口标题</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+layPopwinHead <FONT color=#333399>=</FONT> (LinearLayout) 
+contentView.findViewById(R.id.layPopwinHead);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+txtTitle <FONT color=#333399>=</FONT> (TextView) 
+contentView.findViewById(R.id.txtPopwinTitle);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (title <FONT color=#333399>!=</FONT> null <FONT 
+color=#333399>&amp;&amp;</FONT> <FONT color=#333399>!</FONT><FONT 
+color=#ff00bf>""</FONT>.equals(title)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtTitle.setText(title);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((LinearLayout.LayoutParams) 
+layPopwinHead.getLayoutParams()).height <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>15</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;txtTitle.setVisibility(View.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+窗口主要内容区域</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+layPopwinMain <FONT color=#333399>=</FONT> (LinearLayout) 
+contentView.findViewById(R.id.layPopwinMain);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+prm4MainView <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 
+LinearLayout.LayoutParams.FILL_PARENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mainView.setLayoutParams(prm4MainView);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layPopwinMain.addView(mainView);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+窗口按钮区域</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+layPopwinBottom <FONT color=#333399>=</FONT> (LinearLayout) 
+contentView.findViewById(R.id.layPopwinBottom);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+btnPrm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btnPrm.weight<FONT 
+color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> i <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (Button btn <FONT color=#333399>:</FONT> 
+buttons) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+btnLL <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+btnPrm1 <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams.WRAP_CONTENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btnPrm1.weight<FONT 
+color=#333399>=</FONT> <FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(i<FONT color=#333399>!=</FONT>buttons.length<FONT 
+color=#333399>-</FONT><FONT color=#6e00aa>1</FONT><FONT 
+color=#333399>&amp;&amp;</FONT>buttons.length<FONT color=#333399>!=</FONT><FONT 
+color=#6e00aa>1</FONT>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btnLL.setPadding(<FONT 
+color=#6e00aa>0</FONT>, <FONT color=#6e00aa>0</FONT>, <FONT 
+color=#6e00aa>1</FONT>, <FONT 
+color=#6e00aa>0</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btnLL.addView(btn, 
+btnPrm1);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layPopwinBottom.addView(btnLL, 
+btnPrm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setTextColor(Color.WHITE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;btn.setBackgroundResource(R.drawable.btn_popwindow);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i<FONT 
+color=#333399>++</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PopupWindow 
+win <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+PopupWindow(contentView,width, height, 
+true);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;win.setAnimationStyle(R.style.popwindow_anim);<BR><FONT 
+color=#008000>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;win.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.pop_win_bg));</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;win.update();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+win;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+将px转为dip<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+pxValue<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author : 
+wang.jun&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @time : 2011-12-14 
+下午03:47:10&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+px2dip(Context context, <FONT color=#0000ff><B>float</B></FONT> pxValue) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>float</B></FONT> scale 
+<FONT color=#333399>=</FONT> 
+context.getResources().getDisplayMetrics().density;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> (<FONT color=#0000ff><B>int</B></FONT>) 
+(pxValue <FONT color=#333399>/</FONT> scale <FONT color=#333399>+</FONT> <FONT 
+color=#6e00aa>0</FONT>.<FONT 
+color=#6e00aa>5f</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+将dip转为px<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+dipValue<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author : 
+wang.jun&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @time : 2011-12-14 
+下午03:57:26&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> 
+dip2px(Context context, <FONT color=#0000ff><B>float</B></FONT> dipValue) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>float</B></FONT> scale 
+<FONT color=#333399>=</FONT> 
+context.getResources().getDisplayMetrics().density;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> (<FONT color=#0000ff><B>int</B></FONT>) 
+(dipValue <FONT color=#333399>*</FONT> scale <FONT color=#333399>+</FONT> <FONT 
+color=#6e00aa>0</FONT>.<FONT 
+color=#6e00aa>5f</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+判断当前手机是否有内存卡<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author : 
+wang.jun&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @time : 2011-12-20 
+下午09:39:29&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>boolean</B></FONT> hasSdcard() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String status <FONT 
+color=#333399>=</FONT> 
+Environment.getExternalStorageState();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (status.equals(Environment.MEDIA_MOUNTED)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} <FONT 
+color=#0000ff><B>else</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/* 判断是否是内网IP */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>boolean</B></FONT> isInnerIP(String ipAddress) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>boolean</B></FONT> isInnerIp <FONT color=#333399>=</FONT> 
+false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> ipNum <FONT color=#333399>=</FONT> 
+getIpNum(ipAddress);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+私有IP：A类 10.0.0.0-10.255.255.255 B类 172.16.0.0-172.31.255.255 
+C类<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+192.168.0.0-192.168.255.255 
+当然，还有127这个网段是环回地址<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> aBegin <FONT color=#333399>=</FONT> 
+getIpNum(<FONT 
+color=#ff00bf>"10.0.0.0"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> aEnd <FONT color=#333399>=</FONT> 
+getIpNum(<FONT 
+color=#ff00bf>"10.255.255.255"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> bBegin <FONT color=#333399>=</FONT> 
+getIpNum(<FONT 
+color=#ff00bf>"172.16.0.0"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> bEnd <FONT color=#333399>=</FONT> 
+getIpNum(<FONT 
+color=#ff00bf>"172.31.255.255"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> cBegin <FONT color=#333399>=</FONT> 
+getIpNum(<FONT 
+color=#ff00bf>"192.168.0.0"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> cEnd <FONT color=#333399>=</FONT> 
+getIpNum(<FONT 
+color=#ff00bf>"192.168.255.255"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isInnerIp 
+<FONT color=#333399>=</FONT> isInner(ipNum, aBegin, aEnd) <FONT 
+color=#333399>||</FONT> isInner(ipNum, bBegin, 
+bEnd)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#333399>||</FONT> isInner(ipNum, cBegin, cEnd) <FONT 
+color=#333399>||</FONT> ipAddress.equals(<FONT 
+color=#ff00bf>"127.0.0.1"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+isInnerIp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/* 获取IP数 */</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>long</B></FONT> 
+getIpNum(String ipAddress) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String[] ip <FONT 
+color=#333399>=</FONT> ipAddress.split(<FONT 
+color=#ff00bf>"\\."</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> a <FONT color=#333399>=</FONT> 
+Integer.parseInt(ip[<FONT 
+color=#6e00aa>0</FONT>]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> b <FONT color=#333399>=</FONT> 
+Integer.parseInt(ip[<FONT 
+color=#6e00aa>1</FONT>]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> c <FONT color=#333399>=</FONT> 
+Integer.parseInt(ip[<FONT 
+color=#6e00aa>2</FONT>]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> d <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d 
+<FONT color=#333399>=</FONT> Integer.parseInt(ip[<FONT 
+color=#6e00aa>3</FONT>]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception ex) 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>long</B></FONT> ipNum <FONT color=#333399>=</FONT> a <FONT 
+color=#333399>*</FONT> <FONT color=#6e00aa>256</FONT> <FONT 
+color=#333399>*</FONT> <FONT color=#6e00aa>256</FONT> <FONT 
+color=#333399>*</FONT> <FONT color=#6e00aa>256</FONT> <FONT 
+color=#333399>+</FONT> b <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>256</FONT> <FONT color=#333399>*</FONT> <FONT 
+color=#6e00aa>256</FONT> <FONT color=#333399>+</FONT> c <FONT 
+color=#333399>*</FONT> <FONT color=#6e00aa>256</FONT> <FONT 
+color=#333399>+</FONT> 
+d;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+ipNum;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT 
+color=#0000ff><B>boolean</B></FONT> isInner(<FONT 
+color=#0000ff><B>long</B></FONT> userIp, <FONT color=#0000ff><B>long</B></FONT> 
+begin, <FONT color=#0000ff><B>long</B></FONT> end) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> (userIp <FONT color=#333399>&gt;</FONT><FONT 
+color=#333399>=</FONT> begin) <FONT color=#333399>&amp;&amp;</FONT> (userIp 
+<FONT color=#333399>&lt;</FONT><FONT color=#333399>=</FONT> 
+end);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+用配置的样式渲染Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+view<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+fieldVO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author 
+rongxinhua<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> stylingValue(View view, MmPageAreaFieldVO 
+fieldVO) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO <FONT color=#333399>==</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//可见性</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getIsDisplay() <FONT 
+color=#333399>==</FONT> null <FONT color=#333399>||</FONT> <FONT 
+color=#333399>!</FONT>fieldVO.getIsDisplay().equals(<FONT 
+color=#ff00bf>"1"</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view.setVisibility(View.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(view <FONT color=#0000ff><B>instanceof</B></FONT> 
+TextView) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+tv <FONT color=#333399>=</FONT> 
+(TextView)view;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//字体颜色</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getFontColor() <FONT 
+color=#333399>!=</FONT> null <FONT color=#333399>&amp;&amp;</FONT> <FONT 
+color=#333399>!</FONT>fieldVO.getFontColor().equals(<FONT 
+color=#ff00bf>""</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tv.setTextColor(Color.parseColor(fieldVO.getFontColor()));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//字体大小</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getFontSize() <FONT 
+color=#333399>!=</FONT> null <FONT color=#333399>&amp;&amp;</FONT> <FONT 
+color=#333399>!</FONT>fieldVO.getFontSize().equals(<FONT 
+color=#ff00bf>""</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tv.setTextSize(Float.parseFloat(fieldVO.getFontSize()));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//字体加粗</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getIsBold() <FONT color=#333399>!=</FONT> 
+null <FONT color=#333399>&amp;&amp;</FONT> fieldVO.getIsBold().equals(<FONT 
+color=#ff00bf>"1"</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawBold(view);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+用配置的样式渲染Label<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+view<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+fieldVO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author 
+rongxinhua<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> stylingLabel(View view, MmPageAreaFieldVO 
+fieldVO) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO <FONT color=#333399>==</FONT> null) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//可见性</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getIsDisplay() <FONT 
+color=#333399>==</FONT> null <FONT color=#333399>||</FONT> <FONT 
+color=#333399>!</FONT>fieldVO.getIsDisplay().equals(<FONT 
+color=#ff00bf>"1"</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;view.setVisibility(View.GONE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(view <FONT color=#0000ff><B>instanceof</B></FONT> 
+TextView) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+tv <FONT color=#333399>=</FONT> 
+(TextView)view;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//字体颜色</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getTitleFontColor() <FONT 
+color=#333399>!=</FONT> null <FONT color=#333399>&amp;&amp;</FONT> <FONT 
+color=#333399>!</FONT>fieldVO.getTitleFontColor().equals(<FONT 
+color=#ff00bf>""</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tv.setTextColor(Color.parseColor(fieldVO.getTitleFontColor()));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//字体大小</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getTitleFontSize() <FONT 
+color=#333399>!=</FONT> null <FONT color=#333399>&amp;&amp;</FONT> <FONT 
+color=#333399>!</FONT>fieldVO.getTitleFontSize().equals(<FONT 
+color=#ff00bf>""</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tv.setTextSize(Float.parseFloat(fieldVO.getTitleFontSize()));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//字体加粗</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(fieldVO.getIsBold() <FONT color=#333399>!=</FONT> 
+null <FONT color=#333399>&amp;&amp;</FONT> fieldVO.getIsBold().equals(<FONT 
+color=#ff00bf>"1"</FONT>)) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawBold(view);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+得到屏幕大小尺寸<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+activity<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>public</B></FONT> 
+DisplayMetrics getScreenSize(Activity 
+activity){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DisplayMetrics dm 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DisplayMetrics();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activity.getWindowManager().getDefaultDisplay().getMetrics(dm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+dm;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+获取屏幕的长宽属性<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author 
+rongxinhua<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+DisplayMetrics getDisplayMetrics(Context context) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DisplayMetrics dm <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+DisplayMetrics();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WindowManager 
+wm <FONT color=#333399>=</FONT> 
+(WindowManager)context.getSystemService(Context.WINDOW_SERVICE);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wm.getDefaultDisplay().getMetrics(dm);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+dm;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+线性布局参数<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param prms 依次：width, height, weight, 
+leftMargin, topMargin, rightMargin, 
+bottomMargin<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+LinearLayout.LayoutParams newLinePrm(<FONT color=#0000ff><B>int</B></FONT> ... 
+prms) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(prms.length <FONT color=#333399>&lt;</FONT> <FONT 
+color=#6e00aa>2</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>throw</B></FONT> <FONT color=#0000ff><B>new</B></FONT> 
+RuntimeException(<FONT 
+color=#ff00bf>"只少两个参数！！"</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+prm <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(prms[<FONT color=#6e00aa>0</FONT>], prms[<FONT 
+color=#6e00aa>1</FONT>]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.weight 
+<FONT color=#333399>=</FONT> prms[<FONT 
+color=#6e00aa>2</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.leftMargin 
+<FONT color=#333399>=</FONT> prms[<FONT 
+color=#6e00aa>3</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.topMargin 
+<FONT color=#333399>=</FONT> prms[<FONT 
+color=#6e00aa>4</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.rightMargin 
+<FONT color=#333399>=</FONT> prms[<FONT 
+color=#6e00aa>5</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;prm.bottomMargin 
+<FONT color=#333399>=</FONT> prms[<FONT 
+color=#6e00aa>6</FONT>];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT>(Exception e) 
+{}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+prm;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> W 
+<FONT color=#333399>=</FONT> <FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>2</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> F 
+<FONT color=#333399>=</FONT> <FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>final</B></FONT> <FONT color=#0000ff><B>int</B></FONT> M 
+<FONT color=#333399>=</FONT> <FONT color=#333399>-</FONT><FONT 
+color=#6e00aa>1</FONT>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+创建加载进度条<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param visibility 默认可见性， View.GONE, 
+View.VISIABLE, View.INVISIABLE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author 
+rongxinhua<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+LinearLayout createLoadingBar(Context context, <FONT 
+color=#0000ff><B>int</B></FONT> visibility) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String text <FONT 
+color=#333399>=</FONT> <FONT 
+color=#ff00bf>"加载中..."</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> createLoadingBar(context, text, 
+visibility);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+创建加载进度条<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param visibility 默认可见性， View.GONE, 
+View.VISIABLE, View.INVISIABLE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author 
+rongxinhua<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+LinearLayout createLoadingBar(Context context, String text, <FONT 
+color=#0000ff><B>int</B></FONT> visibility) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+loadingLayout;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout 
+layout <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout(context);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 设置布局 
+水平方向</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.setOrientation(LinearLayout.HORIZONTAL);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+进度条</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProgressBar 
+progressBar <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+ProgressBar(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;progressBar.setIndeterminateDrawable(context.getResources().getDrawable(R.drawable.comp_progressbar));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+进度条显示位置</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;progressBar.setPadding(<FONT 
+color=#6e00aa>0</FONT>, <FONT color=#6e00aa>0</FONT>, <FONT 
+color=#6e00aa>15</FONT>, <FONT 
+color=#6e00aa>0</FONT>);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+把进度条加入到layout中</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+mLayoutParams <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.addView(progressBar, 
+mLayoutParams);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+文本内容</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+textView <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+TextView(context);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textView.setText(text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textView.setTextColor(Color.GRAY);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;textView.setGravity(Gravity.CENTER_VERTICAL);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//把文本加入到layout中</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LinearLayout.LayoutParams 
+FFlayoutParams <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 
+LinearLayout.LayoutParams.WRAP_CONTENT);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.addView(textView, 
+FFlayoutParams);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// 
+设置layout的重力方向，即对齐方式是</FONT>&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;layout.setGravity(Gravity.CENTER);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+LinearLayout(context);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.addView(layout, 
+mLayoutParams);&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.setGravity(Gravity.CENTER);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loadingLayout.setVisibility(visibility);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+loadingLayout;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 传入一个视图或ViewGroup的子类 
+如果是一个TextView 则加粗<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+如果是一个LinearLayout等布局，则把他下面的TextView都加粗<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param 
+v<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> drawBold(View v) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (v <FONT color=#0000ff><B>instanceof</B></FONT> 
+ViewGroup) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> length <FONT color=#333399>=</FONT> ((ViewGroup) 
+v).getChildCount();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> length; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View 
+child <FONT color=#333399>=</FONT> ((ViewGroup) 
+v).getChildAt(i);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (child <FONT 
+color=#0000ff><B>instanceof</B></FONT> TextView) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+tv <FONT color=#333399>=</FONT> (TextView) 
+child;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextPaint 
+tp <FONT color=#333399>=</FONT> 
+tv.getPaint();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tp.setFakeBoldText(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> 
+(child <FONT color=#0000ff><B>instanceof</B></FONT> ViewGroup) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;drawBold(child);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT> (v 
+<FONT color=#0000ff><B>instanceof</B></FONT> TextView) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextView 
+tv <FONT color=#333399>=</FONT> (TextView) 
+v;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TextPaint 
+tp <FONT color=#333399>=</FONT> 
+tv.getPaint();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tp.setFakeBoldText(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+设置焦点选中的方式<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+OnFocusChangeListener focusListener <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> OnFocusChangeListener() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onFocusChange(View v, <FONT color=#0000ff><B>boolean</B></FONT> hasFocus) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (hasFocus) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//如果是EditText</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(v <FONT color=#0000ff><B>instanceof</B></FONT> 
+EditText) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v.setBackgroundResource(R.drawable.edt_editbox_focus);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<FONT 
+color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT>(v <FONT 
+color=#0000ff><B>instanceof</B></FONT> Button) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v.setBackgroundResource(R.drawable.btn_bottom_pressed);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<FONT 
+color=#0000ff><B>else</B></FONT> { <FONT 
+color=#008000>//没选中</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(v <FONT color=#0000ff><B>instanceof</B></FONT> 
+EditText) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v.setBackgroundResource(R.drawable.edt_editbox_normal);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<FONT 
+color=#0000ff><B>else</B></FONT> <FONT color=#0000ff><B>if</B></FONT>(v <FONT 
+color=#0000ff><B>instanceof</B></FONT> Button) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;v.setBackgroundResource(R.drawable.btn_bottom_normal);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;};<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+创建一个没有结果展示的视图<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+activity&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param hintText 
+展示的文字，默认为：没有数据可以展示<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author : 
+wang.jun&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @time : Jan 3, 2012 
+4:29:01 
+PM&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> View 
+createNoResultView(Activity activity, String 
+hintText){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View view <FONT 
+color=#333399>=</FONT> activity.getLayoutInflater().inflate(R.layout.no_result, 
+null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(<FONT 
+color=#333399>!</FONT>TextUtils.isEmpty(hintText)){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;((TextView)view.findViewById(R.id.noResultTextView)).setText(hintText);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+view;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+展示键盘(绑定onClick事件)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> showKeyBoard(Activity context,EditText 
+ed){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showKeyBoard(context,ed,false,null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> showKeyBoard(Activity context,EditText 
+ed,<FONT color=#0000ff><B>boolean</B></FONT> 
+attachToFocusEvent){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showKeyBoard(context,ed,attachToFocusEvent,null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> showKeyBoard(Activity context,EditText 
+ed,String 
+isNumKeyBoard){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;showKeyBoard(context,ed,false,isNumKeyBoard);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param context<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param 
+ed<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param attachToFocusEvent 
+false为默认绑定onClick事件，true为绑定onFocus<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @author : 
+wang.jun&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @time : Jan 16, 2012 
+5:18:54 
+PM&lt;br&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#0000ff><B>void</B></FONT> showKeyBoard(Activity context,EditText 
+ed, <FONT color=#0000ff><B>boolean</B></FONT> attachToFocusEvent,String 
+isNumKeyBoard){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CompKeyboard 
+keyboadrd <FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+CompKeyboard(context);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map<FONT 
+color=#333399>&lt;</FONT>String, Object<FONT color=#333399>&gt;</FONT> condition 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> HashMap<FONT 
+color=#333399>&lt;</FONT>String, Object<FONT 
+color=#333399>&gt;</FONT>();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;condition.put(<FONT 
+color=#ff00bf>"EditText"</FONT>, 
+ed);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;condition.put(<FONT 
+color=#ff00bf>"attachToFocusEvent"</FONT>, 
+attachToFocusEvent);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;condition.put(<FONT 
+color=#ff00bf>"keyBoardType"</FONT>, 
+isNumKeyBoard);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;keyboadrd.redraw(condition);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>protected</B></FONT> View.OnClickListener keyboardClickListner 
+<FONT color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+View.OnClickListener() 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+onClick(View v) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>// TODO Auto-generated method 
+stub</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;};<BR><BR>}</DIV></CODE></BODY></HTML>

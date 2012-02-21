@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"><TITLE>RunThreadManager.java</TITLE>
+<!--defaultCSS-->
+<META name=GENERATOR content="MSHTML 9.00.8112.16441"></HEAD>
+<BODY><CODE>
+<DIV 
+style="BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: left; BORDER-LEFT: black 1px solid; PADDING-BOTTOM: 3px; BACKGROUND-COLOR: window; PADDING-LEFT: 3px; PADDING-RIGHT: 3px; FONT-FAMILY: Courier New; COLOR: black; MARGIN-LEFT: auto; FONT-SIZE: 12px; BORDER-TOP: black 1px solid; MARGIN-RIGHT: auto; BORDER-RIGHT: black 1px solid; PADDING-TOP: 3px"><FONT 
+color=#0000ff><B>package</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.util;&nbsp;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> java.lang.annotation.Annotation;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+java.lang.reflect.InvocationTargetException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.lang.reflect.Method;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.concurrent.CountDownLatch;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+java.util.concurrent.ExecutorService;<BR><FONT 
+color=#0000ff><B>import</B></FONT> java.util.concurrent.Executors;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Handler;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.os.Message;<BR><FONT 
+color=#0000ff><B>import</B></FONT> android.util.Log;<BR><BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.ClientCache;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.Constant;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.common.exception.MmtClientException;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.main.page.PageControler;<BR><FONT 
+color=#0000ff><B>import</B></FONT> 
+com.ztesoft.mobile.trunk.framework.main.page.PageTag;<BR><BR><BR><FONT 
+color=#008000>/**<BR>&nbsp;* 用来处理耗时的操作的线程类<BR>&nbsp;*/</FONT><BR><FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>class</B></FONT> 
+RunThreadManager {<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+不带参数调用线程<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param bo 调用的BO对象<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param methodName 
+调用的BO的方法名<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param handler 
+用于处理执行结果的Handler<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param what 
+用于处理执行结果的Handler的Message的what<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+ExecutorService executorService <FONT color=#333399>=</FONT> 
+Executors.newFixedThreadPool(<FONT color=#6e00aa>5</FONT>); <FONT 
+color=#008000>// 固定5个线程来执行任务</FONT><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+runThread(Object bo, String methodName, Handler 
+handler,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>int</B></FONT> what) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread thread <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> Thread(<FONT 
+color=#0000ff><B>new</B></FONT> RunThread(bo, methodName, handler, 
+what));<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executorService.execute(thread);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//thread.start();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+带参数调用线程<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+@param methodName 调用的BO的方法名<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param handler 
+用于处理执行结果的Handler<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param what 
+用于处理执行结果的Handler的Message的what<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* @param obj 
+方法的参数<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+runThreadWithParams(Object bo, String 
+methodName,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Handler 
+handler, <FONT color=#0000ff><B>int</B></FONT> what, Object... params) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread thread <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> Thread(<FONT 
+color=#0000ff><B>new</B></FONT> RunThread(bo, methodName,handler, what, 
+params));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executorService.execute(thread);<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>/**<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* 
+根据调用者处理，配置注解@PageTag，调用该方法，将则线线程必须等待，页面加载完成，add by 
+xaiof<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT 
+color=#0000ff><B>synchronized</B></FONT> <FONT 
+color=#0000ff><B>static</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+runThreadWithParams(Object bo, String 
+methodName,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Handler 
+handler,Class<FONT color=#333399>&lt;</FONT><FONT color=#333399>?</FONT><FONT 
+color=#333399>&gt;</FONT> invoker,<FONT color=#0000ff><B>int</B></FONT> what, 
+Object... params) 
+{<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thread thread <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> Thread(<FONT 
+color=#0000ff><B>new</B></FONT> RunThread(bo, methodName,handler,invoker, what, 
+params));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;executorService.execute(thread);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#008000>//thread.start();</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>}<BR><BR><FONT 
+color=#0000ff><B>class</B></FONT> RunThread <FONT 
+color=#0000ff><B>implements</B></FONT> Runnable 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> <FONT 
+color=#0000ff><B>int</B></FONT> what <FONT color=#333399>=</FONT> <FONT 
+color=#6e00aa>0</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Handler 
+handler;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+Object bo;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+String methodName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Object[] 
+params;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff><B>private</B></FONT> 
+CountDownLatch mSignal<FONT 
+color=#333399>=</FONT>null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> Class<FONT color=#333399>&lt;</FONT><FONT 
+color=#333399>?</FONT><FONT color=#333399>&gt;</FONT> mInvoker<FONT 
+color=#333399>=</FONT>null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> RunThread(Object bo, String methodName, 
+Handler handler, <FONT color=#0000ff><B>int</B></FONT> what) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.bo <FONT color=#333399>=</FONT> 
+bo;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.methodName <FONT color=#333399>=</FONT> 
+methodName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.handler <FONT color=#333399>=</FONT> 
+handler;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.what <FONT color=#333399>=</FONT> 
+what;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> RunThread(Object bo, String methodName, 
+Handler handler, <FONT color=#0000ff><B>int</B></FONT> what, Object... params) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.bo <FONT color=#333399>=</FONT> 
+bo;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.methodName <FONT color=#333399>=</FONT> 
+methodName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.handler <FONT color=#333399>=</FONT> 
+handler;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.what <FONT color=#333399>=</FONT> 
+what;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.params <FONT color=#333399>=</FONT> 
+params;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> RunThread(Object bo, String 
+methodName,Handler handler,Class<FONT color=#333399>&lt;</FONT><FONT 
+color=#333399>?</FONT><FONT color=#333399>&gt;</FONT> invoker,<FONT 
+color=#0000ff><B>int</B></FONT> what, Object... params) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.bo <FONT color=#333399>=</FONT> 
+bo;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.methodName <FONT color=#333399>=</FONT> 
+methodName;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.handler <FONT color=#333399>=</FONT> 
+handler;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.what <FONT color=#333399>=</FONT> 
+what;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.params <FONT color=#333399>=</FONT> 
+params;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.mInvoker<FONT 
+color=#333399>=</FONT>invoker;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;@Override<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>public</B></FONT> <FONT color=#0000ff><B>void</B></FONT> run() 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message msg <FONT 
+color=#333399>=</FONT> <FONT color=#0000ff><B>new</B></FONT> 
+Message();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>try</B></FONT> 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>this</B></FONT>.await();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class<FONT 
+color=#333399>&lt;</FONT><FONT color=#333399>?</FONT><FONT 
+color=#333399>&gt;</FONT> ownerClass <FONT color=#333399>=</FONT> bo <FONT 
+color=#0000ff><B>instanceof</B></FONT> Class<FONT color=#333399>&lt;</FONT><FONT 
+color=#333399>?</FONT><FONT color=#333399>&gt;</FONT> <FONT 
+color=#333399>?</FONT> (Class<FONT color=#333399>&lt;</FONT><FONT 
+color=#333399>?</FONT><FONT color=#333399>&gt;</FONT>)bo <FONT 
+color=#333399>:</FONT> bo.getClass(); <FONT color=#008000>//修正当传入的bo为Class 
+使用bo中的静态类时 
+会报方法找不到的错误</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Object 
+resultObj <FONT color=#333399>=</FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT> (params <FONT color=#333399>!=</FONT> null) { 
+<FONT color=#008000>// 
+带参数的的方法线程</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class<FONT 
+color=#333399>&lt;</FONT><FONT color=#333399>?</FONT><FONT 
+color=#333399>&gt;</FONT>[] paramclass <FONT color=#333399>=</FONT> <FONT 
+color=#0000ff><B>new</B></FONT> 
+Class[params.length];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>for</B></FONT> (<FONT color=#0000ff><B>int</B></FONT> i <FONT 
+color=#333399>=</FONT> <FONT color=#6e00aa>0</FONT>; i <FONT 
+color=#333399>&lt;</FONT> params.length; i<FONT color=#333399>++</FONT>) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;paramclass[i] 
+<FONT color=#333399>=</FONT> 
+params[i].getClass();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Method 
+method <FONT color=#333399>=</FONT> ownerClass.getMethod(methodName, 
+paramclass);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultObj 
+<FONT color=#333399>=</FONT> method.invoke(bo, 
+params);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>else</B></FONT> { <FONT color=#008000>// 
+不带参数的方法线程</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Method 
+method <FONT color=#333399>=</FONT> 
+ownerClass.getMethod(methodName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultObj 
+<FONT color=#333399>=</FONT> 
+method.invoke(bo);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(mSignal<FONT 
+color=#333399>!=</FONT>null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mSignal.await();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.what 
+<FONT color=#333399>=</FONT> 
+what;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;msg.obj 
+<FONT color=#333399>=</FONT> 
+resultObj;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;handler.sendMessage(msg);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} 
+<FONT color=#0000ff><B>catch</B></FONT> (Exception ex) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Log.e(<FONT 
+color=#ff00bf>"RunThreadManager"</FONT>, ex.getMessage(), 
+ex);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(ex <FONT color=#0000ff><B>instanceof</B></FONT> 
+InvocationTargetException){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Throwable 
+t <FONT color=#333399>=</FONT> 
+((InvocationTargetException)ex).getTargetException();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(t <FONT color=#0000ff><B>instanceof</B></FONT> 
+MmtClientException){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MmtClientException 
+me <FONT color=#333399>=</FONT> 
+(MmtClientException)t;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+errorText <FONT color=#333399>=</FONT> <FONT 
+color=#ff00bf>"未知异常"</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(me.getMessage() <FONT color=#333399>!=</FONT> 
+null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errorText 
+<FONT color=#333399>=</FONT> 
+me.getMessage();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message 
+errorMsg <FONT color=#333399>=</FONT> Message.obtain(handler, 
+Constant.EXCEPTION, <FONT color=#ff00bf>"错误:"</FONT> <FONT 
+color=#333399>+</FONT> 
+errorText);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errorMsg.sendToTarget();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String 
+errorText <FONT color=#333399>=</FONT> <FONT 
+color=#ff00bf>"未知异常"</FONT>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(t.getMessage() <FONT color=#333399>!=</FONT> 
+null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errorText 
+<FONT color=#333399>=</FONT> 
+t.getMessage();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message 
+errorMsg <FONT color=#333399>=</FONT> Message.obtain(handler, 
+Constant.EXCEPTION, <FONT color=#ff00bf>"发生异常:"</FONT> <FONT 
+color=#333399>+</FONT> 
+errorText);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;errorMsg.sendToTarget();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>void</B></FONT> 
+await() {<FONT 
+color=#008000>//线程增加阻塞机制</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(<FONT 
+color=#0000ff><B>this</B></FONT>.mInvoker<FONT 
+color=#333399>!=</FONT>null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PageControler 
+pageControler <FONT color=#333399>=</FONT><FONT color=#0000ff><B>new</B></FONT> 
+PageControler(mInvoker);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(pageControler.isDoPageLoad()<FONT 
+color=#333399>==</FONT>true){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageControler.setmHandler(<FONT 
+color=#0000ff><B>this</B></FONT>.handler);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageControler.init();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mSignal<FONT 
+color=#333399>=</FONT>pageControler.getSignal();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pageControler.clearSignal();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>private</B></FONT> <FONT color=#0000ff><B>static</B></FONT> 
+<FONT color=#333399>&lt;</FONT>A <FONT color=#0000ff><B>extends</B></FONT> 
+Annotation<FONT color=#333399>&gt;</FONT> A getInvoker(Class<FONT 
+color=#333399>&lt;</FONT><FONT color=#333399>?</FONT><FONT 
+color=#333399>&gt;</FONT> invoker, Class<FONT color=#333399>&lt;</FONT>A<FONT 
+color=#333399>&gt;</FONT> annotationClass) 
+{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(invoker<FONT 
+color=#333399>!=</FONT>null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A 
+mPageTag<FONT color=#333399>=</FONT> 
+(A)invoker.getAnnotation(annotationClass);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>if</B></FONT>(mPageTag<FONT 
+color=#333399>!=</FONT>null){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+mPageTag;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT 
+color=#0000ff><B>return</B></FONT> 
+null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR><BR>}</DIV></CODE></BODY></HTML>
