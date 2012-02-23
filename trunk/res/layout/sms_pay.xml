@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textColor="@android:color/white" android:gravity="left|center" android:id="@id/sms_pay_title" android:background="@drawable/title_background" android:paddingLeft="14.0dip" android:paddingTop="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/sms_pay_title" />
+    <LinearLayout android:layout_gravity="center_horizontal" android:orientation="horizontal" android:id="@id/sms_pay_operator" android:paddingTop="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <TextView android:textSize="20.0sp" android:paddingLeft="14.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="14.0dip" android:text="@string/sms_pay_operator_title" android:layout_weight="0.5" />
+        <Spinner android:entries="@array/sms_pay_operator_array" android:layout_gravity="right" android:id="@id/sp_operator" android:layout_width="120.0dip" android:layout_height="wrap_content" android:layout_marginRight="14.0dip" android:layout_weight="0.5" />
+    </LinearLayout>
+    <TextView android:background="@drawable/list_divider" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+    <TextView android:textSize="20.0sp" android:id="@id/sms_pay_discription" android:paddingLeft="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_margin="14.0dip" android:text="@string/sms_pay_discription" />
+    <TextView android:background="@drawable/list_divider" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginBottom="14.0dip" />
+    <Button android:textSize="20.0sp" android:textColor="@color/text_color" android:layout_gravity="center_horizontal" android:id="@id/btn_sms_pay_send" android:background="@drawable/btn_negative_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/sms_pay_send" />
+</LinearLayout>

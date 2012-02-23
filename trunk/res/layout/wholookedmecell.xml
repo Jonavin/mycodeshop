@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableLayout android:id="@id/who_looked_me_table_0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <TableRow>
+            <FrameLayout android:gravity="center_horizontal" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+                <ImageView android:gravity="fill_vertical" android:id="@id/who_looked_me_cell_head_image" android:background="?android:windowBackground" android:paddingTop="4.0dip" android:paddingBottom="4.0dip" android:layout_width="74.0dip" android:layout_height="96.0dip" android:scaleType="centerInside" />
+                <ImageView android:gravity="center_horizontal" android:id="@id/who_looked_me_cell_online_image" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            </FrameLayout>
+            <TableLayout android:id="@id/who_looked_me_table_1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="8.0sp"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+                <TableRow>
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="14.0sp" android:textStyle="bold" android:ellipsize="marquee" android:id="@id/who_looked_me_cell_text0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/who_looked_me_cell_text0" />
+                </TableRow>
+                <TableRow>
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="12.0sp" android:ellipsize="marquee" android:id="@id/who_looked_me_cell_text1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/who_looked_me_cell_text1" />
+                </TableRow>
+                <TableRow>
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="12.0sp" android:ellipsize="marquee" android:id="@id/who_looked_me_cell_text2" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/who_looked_me_cell_text2" />
+                </TableRow>
+                <TableRow>
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="12.0sp" android:ellipsize="marquee" android:id="@id/who_looked_me_cell_text3" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/who_looked_me_cell_text3" />
+                </TableRow>
+            </TableLayout>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

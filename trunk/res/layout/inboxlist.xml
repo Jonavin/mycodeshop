@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView android:id="@id/inbox_read_flag" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="5.0px" />
+    <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="fill_parent"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <TextView android:textSize="22.0px" android:textColor="#ffffffff" android:id="@id/inbox_nickname" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            <TextView android:textSize="13.0px" android:textColor="#ffffffff" android:id="@id/inbox_subject" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+        <TextView android:textSize="13.0px" android:textColor="#ffffffff" android:id="@id/inbox_content" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:textSize="13.0px" android:textColor="#ffffffff" android:id="@id/inbox_send_time" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="vertical" android:background="@drawable/bg_register" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textColor="@android:color/white" android:gravity="left|center" android:id="@id/register_title" android:background="@drawable/title_background" android:paddingLeft="14.0dip" android:paddingTop="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/title_register" android:layout_alignParentTop="true" />
+    <Button android:layout_gravity="center_horizontal" android:id="@id/register_type_mobile" android:background="@drawable/btn_positive_selector" android:layout_width="200.0dip" android:layout_height="wrap_content" android:layout_marginTop="74.0dip" android:text="@string/register_type_mobile" />
+    <Button android:layout_gravity="center_horizontal" android:id="@id/register_type_email" android:background="@drawable/btn_positive_selector" android:layout_width="200.0dip" android:layout_height="wrap_content" android:layout_marginTop="50.0dip" android:text="@string/register_type_email" />
+</LinearLayout>

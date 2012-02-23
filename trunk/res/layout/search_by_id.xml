@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginTop="24.0dip" android:layout_marginRight="14.0dip">
+        <TextView android:textSize="18.0sp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="4.0dip" android:text="@string/label_search_by_id" />
+        <EditText android:id="@id/et_search_by_id_input" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="4.0dip" android:hint="@string/search_by_id_hint" android:inputType="number" />
+    </LinearLayout>
+    <Button android:textSize="16.0sp" android:layout_gravity="center_horizontal" android:id="@id/btn_search_by_id_submit" android:background="@drawable/btn_positive_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14.0dip" android:text="@string/search_text_do_search" />
+</LinearLayout>

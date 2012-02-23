@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <style name="Theme.SearchConditionActivity" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@drawable/search_condition_float_box</item>
+    </style>
+    <style name="Theme.FloatActivity" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@drawable/float_box</item>
+    </style>
+    <style name="CustomNoTitle" parent="@android:style/Theme.Light">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

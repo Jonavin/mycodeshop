@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="horizontal" android:id="@id/register_table_0" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button android:textSize="16.0sp" android:gravity="left" android:id="@id/register_botton_head_image" android:background="@drawable/upload_portrait" android:layout_width="113.0dip" android:layout_height="148.0dip" android:layout_margin="8.0sp" />
+    <LinearLayout android:orientation="vertical" android:id="@id/register_table_1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="8.0sp" android:layout_marginRight="8.0sp" android:layout_marginBottom="8.0sp"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <EditText android:id="@id/register_edit_text_mail" android:nextFocusDown="@id/register_edit_text_password" android:layout_width="fill_parent" android:layout_height="wrap_content" android:hint="@string/register_text_hint_email" android:layout_weight="0.8" android:inputType="textEmailAddress" />
+        <EditText android:id="@id/register_edit_text_password" android:nextFocusDown="@id/register_edit_text_nickname" android:layout_width="fill_parent" android:layout_height="wrap_content" android:hint="@string/register_text_password" android:inputType="textPassword" />
+        <EditText android:id="@id/register_edit_text_nickname" android:layout_width="fill_parent" android:layout_height="wrap_content" android:hint="@string/register_text_nickname" android:maxLength="20" android:inputType="textPersonName" />
+    </LinearLayout>
+</LinearLayout>

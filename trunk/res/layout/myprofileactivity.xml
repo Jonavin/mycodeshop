@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:id="@id/myprofile_layout_0" android:background="@drawable/bg_list_item_normal" android:layout_width="fill_parent" android:layout_height="50.0dip">
+        <LinearLayout android:orientation="horizontal" android:background="@drawable/custom_background_btn_group" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="8.0dip" android:layout_marginTop="8.0dip" android:layout_marginRight="8.0dip" android:layout_marginBottom="1.0dip" android:layout_alignParentTop="true" android:layout_centerHorizontal="true">
+            <Button android:enabled="false" android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/myprofile_button_myprofile" android:background="@drawable/btn_my_profile_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/myprofile_text_myprofile" />
+            <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/myprofile_button_mate_selection" android:background="@drawable/btn_mate_selection_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="1.0dip" android:text="@string/myprofile_text_mate_selection" />
+            <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/myprofile_button_setting" android:background="@drawable/btn_settings_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/myprofile_text_setting" />
+        </LinearLayout>
+    </LinearLayout>
+    <Button android:textSize="16.0sp" android:id="@id/myprofile_button_submit" android:background="@drawable/btn_send_mail_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="8.0dip" android:text="@string/myprofile_text_submit" android:layout_alignParentBottom="true" android:layout_centerHorizontal="true" />
+    <ListView android:id="@id/myprofile_list" android:paddingLeft="8.0dip" android:paddingRight="8.0dip" android:fadingEdge="none" android:layout_width="fill_parent" android:layout_height="wrap_content" android:divider="@drawable/list_divider" android:layout_weight="1.0" android:layout_above="@id/myprofile_button_submit" android:layout_below="@id/myprofile_layout_0" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_children" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_bloodtype" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_nation" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_industry" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_income" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_house" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_auto" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+    <Spinner android:id="@id/myprofile_hidden_spinner_characters" android:layout_width="1.0dip" android:layout_height="1.0dip" />
+</RelativeLayout>

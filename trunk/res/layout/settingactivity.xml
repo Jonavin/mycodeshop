@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textColor="@android:color/white" android:gravity="center_vertical" android:id="@id/settings_title" android:background="@drawable/title_background" android:paddingLeft="14.0dip" android:paddingTop="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/myprofile_text_setting" />
+    <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+            <LinearLayout android:id="@id/setting_layout_0" android:background="@drawable/bg_list_item_normal" android:layout_width="fill_parent" android:layout_height="50.0dip">
+                <LinearLayout android:orientation="horizontal" android:background="@drawable/custom_background_btn_group" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="8.0dip" android:layout_marginTop="8.0dip" android:layout_marginRight="8.0dip" android:layout_marginBottom="1.0dip" android:layout_centerHorizontal="true">
+                    <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/setting_button_myprofile" android:background="@drawable/btn_my_profile_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/myprofile_text_myprofile" />
+                    <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/setting_button_mate_selection" android:background="@drawable/btn_mate_selection_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="1.0dip" android:text="@string/myprofile_text_mate_selection" />
+                    <Button android:enabled="false" android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/setting_button_setting" android:background="@drawable/btn_settings_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/myprofile_text_setting" />
+                </LinearLayout>
+            </LinearLayout>
+            <TableLayout android:id="@id/setting_table_0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:shrinkColumns="0"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+                <TableRow>
+                    <TextView android:textSize="16.0sp" android:id="@id/setting_textview0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/setting_text0" />
+                    <CheckBox android:id="@id/setting_distance_notification_checkbox" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </TableRow>
+                <TableRow>
+                    <TextView android:textSize="14.0sp" android:id="@id/setting_textview1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginBottom="19.0dip" android:text="@string/setting_text1" />
+                </TableRow>
+                <TableRow>
+                    <LinearLayout android:id="@id/setting_layout_1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginBottom="19.0dip">
+                        <Button android:textSize="20.0sp" android:textColor="@color/text_color" android:id="@id/setting_button_distance500" android:background="@drawable/btn_settings_distance_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/setting_text_distance500" />
+                        <Button android:textSize="20.0sp" android:textColor="@color/text_color" android:id="@id/setting_button_distance1000" android:background="@drawable/btn_settings_distance_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginRight="14.0dip" android:text="@string/setting_text_distance1000" />
+                        <Button android:textSize="20.0sp" android:textColor="@color/text_color" android:id="@id/setting_button_distance2000" android:background="@drawable/btn_settings_distance_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/setting_text_distance2000" />
+                    </LinearLayout>
+                </TableRow>
+                <TableRow android:background="@drawable/list_divider" />
+                <TableRow>
+                    <TextView android:textSize="16.0sp" android:id="@id/setting_textview2" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/setting_text2" />
+                    <CheckBox android:id="@id/setting_share_location_checkbox" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </TableRow>
+                <TableRow>
+                    <TextView android:textSize="14.0sp" android:id="@id/setting_textview3" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginBottom="19.0dip" android:text="@string/setting_text3" />
+                </TableRow>
+                <TableRow android:background="@drawable/list_divider" />
+                <TableRow android:layout_marginTop="14.0dip">
+                    <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:layout_gravity="center_horizontal" android:id="@id/setting_button_recommend" android:background="@drawable/btn_settings_exit_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/recommend_to_friends" />
+                </TableRow>
+                <TableRow android:layout_marginTop="14.0dip">
+                    <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:layout_gravity="center_horizontal" android:id="@id/setting_button_logout" android:background="@drawable/btn_settings_exit_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/setting_text_logout" />
+                </TableRow>
+                <TableRow android:layout_marginTop="14.0dip" android:layout_marginBottom="14.0dip">
+                    <LinearLayout android:gravity="center_horizontal" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/version_code" />
+                        <TextView android:id="@id/version_code" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </TableRow>
+            </TableLayout>
+            <TextView android:gravity="center_horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="14.0dip" android:layout_marginBottom="14.0dip" android:text="@string/label_nasdaq" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

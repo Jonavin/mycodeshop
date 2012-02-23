@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<searchable android:label="@string/search_label" android:hint="@string/search_hint" android:searchMode="showSearchLabelAsBadge" android:searchSuggestAuthority="com.example.android.apis.SuggestionProvider" android:searchSuggestSelection="\u0020?\u0020" android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" android:voiceLanguageModel="free_form" android:voicePromptText="@string/search_invoke"
+  xmlns:android="http://schemas.android.com/apk/res/android" />

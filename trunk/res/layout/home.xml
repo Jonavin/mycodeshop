@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:orientation="vertical" android:background="@android:color/black" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableLayout android:id="@id/home_table_0" android:background="@drawable/bg_homepage_tab" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_alignParentTop="true"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <TableRow>
+            <Button android:textSize="14.0sp" android:textColor="@android:color/white" android:gravity="bottom|center" android:id="@id/home_tab_button_0" android:background="@drawable/btn_predestination_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/home_tab_text_0" />
+            <Button android:textSize="14.0sp" android:textColor="@android:color/white" android:gravity="bottom|center" android:id="@id/home_tab_button_1" android:background="@drawable/btn_email_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/home_tab_text_1" />
+            <Button android:textSize="14.0sp" android:textColor="@android:color/white" android:gravity="bottom|center" android:id="@id/home_tab_button_2" android:background="@drawable/btn_search_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/home_tab_text_2" />
+            <Button android:textSize="14.0sp" android:textColor="@android:color/white" android:gravity="bottom|center" android:id="@id/home_tab_button_3" android:background="@drawable/btn_service_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/home_tab_text_3" />
+            <Button android:textSize="14.0sp" android:textColor="@android:color/white" android:gravity="bottom|center" android:id="@id/home_tab_button_4" android:background="@drawable/btn_profile_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/home_tab_text_4" />
+        </TableRow>
+    </TableLayout>
+    <ImageView android:background="@drawable/strip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_below="@id/home_table_0" />
+    <TableLayout android:id="@id/home_table_1" android:background="@drawable/bg_homepage_bottom" android:fadingEdge="none" android:layout_width="fill_parent" android:layout_height="wrap_content" android:stretchColumns="1" android:layout_alignParentBottom="true"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <TableRow android:layout_marginTop="5.0sp">
+            <Button android:textSize="16.0sp" android:id="@id/home_botton_login" android:background="@drawable/btn_home_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0sp" android:text="@string/home_botton_text_0" />
+            <TextView android:textColor="#f0ffffff" android:gravity="center" android:layout_gravity="center" android:id="@id/home_text_info_0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/home_text_0" />
+            <Button android:textSize="16.0sp" android:id="@id/home_botton_register" android:background="@drawable/btn_home_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="5.0sp" android:text="@string/home_botton_text_1" />
+        </TableRow>
+    </TableLayout>
+    <FrameLayout android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_above="@id/home_table_1" android:layout_below="@id/home_table_0">
+        <GridView android:id="@id/home_gridView" android:paddingTop="5.0dip" android:fadingEdge="none" android:layout_width="fill_parent" android:layout_height="fill_parent" android:horizontalSpacing="1.0dip" android:verticalSpacing="1.0dip" android:stretchMode="columnWidth" android:columnWidth="10.0dip" android:numColumns="3" />
+        <LinearLayout android:layout_gravity="center" android:orientation="horizontal" android:id="@id/home_progressbar" android:background="@drawable/custom_background_frame" android:layout_width="285.0sp" android:layout_height="95.0sp">
+            <ProgressBar android:layout_gravity="center_vertical" android:id="@id/about_dialog_webview_progress" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="8.0sp" android:max="100" android:progress="0" android:indeterminateDrawable="@drawable/progress_bar" />
+            <TextView android:textColor="@android:color/white" android:layout_gravity="center_vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="18.0sp" android:text="@string/dialog_data_reading" />
+        </LinearLayout>
+    </FrameLayout>
+</RelativeLayout>

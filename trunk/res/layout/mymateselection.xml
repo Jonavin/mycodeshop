@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textColor="@android:color/white" android:gravity="center_vertical" android:id="@id/mymateselection_title" android:background="@drawable/title_background" android:paddingLeft="14.0dip" android:paddingTop="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/myprofile_text_mate_selection" />
+    <LinearLayout android:id="@id/mymateselection_layout_0" android:background="@drawable/bg_list_item_normal" android:layout_width="fill_parent" android:layout_height="50.0dip" android:layout_below="@id/mymateselection_title">
+        <LinearLayout android:orientation="horizontal" android:background="@drawable/custom_background_btn_group" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="8.0dip" android:layout_marginTop="8.0dip" android:layout_marginRight="8.0dip" android:layout_marginBottom="1.0dip" android:layout_centerHorizontal="true">
+            <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/mymateselection_button_myprofile" android:background="@drawable/btn_my_profile_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/myprofile_text_myprofile" />
+            <Button android:enabled="false" android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/mymateselection_button_mate_selection" android:background="@drawable/btn_mate_selection_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="1.0dip" android:text="@string/myprofile_text_mate_selection" />
+            <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/mymateselection_button_setting" android:background="@drawable/btn_settings_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/myprofile_text_setting" />
+        </LinearLayout>
+    </LinearLayout>
+    <TableLayout android:id="@id/mymateselection_table_0" android:padding="5.0sp" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="14.0dip" android:layout_alignParentBottom="true"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <TableRow>
+            <Button android:textSize="16.0sp" android:textColor="@color/text_color" android:id="@id/mymateselection_botton_back" android:background="@drawable/btn_negative_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginRight="10.0dip" android:text="@string/mymateselection_botton_text_back" android:layout_weight="0.5" />
+            <Button android:textSize="16.0sp" android:id="@id/mymateselection_botton_confirm" android:background="@drawable/btn_positive_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="14.0dip" android:text="@string/mymateselection_botton_text_confirm" android:layout_weight="0.5" />
+        </TableRow>
+    </TableLayout>
+    <ListView android:id="@id/mymateselection_list" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="5.0sp" android:divider="@drawable/list_divider" android:layout_weight="1.0" android:layout_above="@id/mymateselection_table_0" android:layout_below="@id/mymateselection_layout_0" />
+    <com.jiayuan.util.picker.NumberPicker android:id="@id/mate_selection_hidden_numberpicker_height_range" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+    <Spinner android:id="@id/mate_selection_hidden_spinner_work_location_0" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+    <Spinner android:id="@id/mate_selection_hidden_spinner_work_location_1" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+    <com.jiayuan.util.picker.NumberPicker android:id="@id/mate_selection_hidden_numberpicker_age_range" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+    <Spinner android:id="@id/mate_selection_hidden_spinner_certified" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+    <Spinner android:id="@id/mate_selection_hidden_spinner_merriage" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+    <Spinner android:id="@id/mate_selection_hidden_spinner_education" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+    <Spinner android:id="@id/mate_selection_hidden_spinner_avatar" android:layout_width="1.0sp" android:layout_height="1.0sp" />
+</RelativeLayout>
