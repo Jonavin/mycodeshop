@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="@drawable/icon_back_to_top" android:id="@id/item_back_to_top" android:title="@string/menu_item_back_to_top" />
+    <item android:icon="@drawable/icon_refresh" android:id="@id/item_profile_refresh" android:title="@string/menu_item_refresh" />
+</menu>

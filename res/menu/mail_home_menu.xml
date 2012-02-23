@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="@drawable/icon_select_all" android:id="@id/item_mail_home_select_all" android:title="@string/menu_item_select_all" />
+    <item android:icon="@drawable/icon_delete" android:id="@id/item_mail_home_delete" android:title="@string/menu_item_delete" />
+    <item android:icon="@drawable/icon_refresh" android:id="@id/item_mail_home_refresh" android:title="@string/menu_item_refresh" />
+    <item android:icon="@drawable/icon_settings" android:id="@id/item_mail_home_setting" android:title="@string/menu_item_setting" />
+</menu>

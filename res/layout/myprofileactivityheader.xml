@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="vertical" android:id="@id/myprofile_table_0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="14.0dip" android:layout_marginRight="14.0dip" android:layout_marginBottom="14.0dip"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <ImageView android:textSize="16.0sp" android:gravity="left" android:layout_gravity="top" android:id="@id/myprofile_button_head_image" android:clickable="true" android:layout_width="70.0dip" android:layout_height="96.0dip" android:layout_margin="7.0dip" android:src="@drawable/upload_portrait" />
+        <TableLayout android:id="@id/myprofile_table_1" android:background="@drawable/custom_corner" android:layout_width="210.0dip" android:layout_height="wrap_content" android:layout_marginLeft="7.0dip" android:layout_marginTop="10.0dip" android:layout_marginRight="7.0dip" android:layout_marginBottom="14.0dip"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <TableRow android:layout_margin="1.0dip">
+                <TextView android:textSize="18.0sp" android:id="@id/myprofile_text_info_0" android:background="@drawable/bg_table_first_row_corner" android:paddingLeft="8.0dip" android:paddingTop="4.0dip" android:paddingBottom="4.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/myprofile_text_info_0" />
+            </TableRow>
+            <TableRow android:background="#ffffffff" android:layout_marginLeft="1.0dip" android:layout_marginRight="1.0dip">
+                <TextView android:textSize="12.0sp" android:id="@id/myprofile_text_info_1" android:paddingLeft="8.0dip" android:paddingTop="4.0dip" android:layout_width="208.0dip" android:layout_height="wrap_content" android:text="@string/myprofile_text_info_1" />
+            </TableRow>
+            <TableRow android:background="@drawable/bg_table_last_row_corner" android:layout_marginLeft="1.0dip" android:layout_marginRight="1.0dip" android:layout_marginBottom="1.0dip">
+                <TextView android:textSize="12.0sp" android:id="@id/myprofile_text_info_2" android:background="@drawable/bg_table_last_row_corner" android:paddingLeft="8.0dip" android:paddingBottom="4.0dip" android:layout_width="208.0dip" android:layout_height="wrap_content" android:text="@string/myprofile_text_info_2" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+    <TableLayout android:id="@id/myprofile_button_photo" android:background="@drawable/custom_corner" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginRight="2.0dip" android:layout_marginBottom="14.0dip" android:stretchColumns="1">
+        <TableRow android:background="@drawable/bg_white_table_custom_corner" android:layout_margin="1.0dip">
+            <ImageView android:layout_gravity="center_vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:src="@drawable/icon_photo_book" />
+            <TextView android:textSize="16.0sp" android:gravity="center_vertical" android:layout_gravity="center_vertical" android:paddingLeft="4.0dip" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text="@string/myprofile_text_photo" />
+            <ImageView android:layout_gravity="right" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginRight="5.0dip" android:layout_marginBottom="1.0dip" android:src="@drawable/ic_btn_round_more_normal" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:gravity="center_horizontal" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:background="@drawable/bg_list_item_normal" android:layout_width="fill_parent" android:layout_height="50.0dip">
+        <LinearLayout android:orientation="horizontal" android:background="@drawable/custom_background_btn_group" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="8.0dip" android:layout_marginTop="8.0dip" android:layout_marginRight="8.0dip" android:layout_marginBottom="1.0dip">
+            <Button android:textSize="13.0sp" android:textColor="@color/text_color" android:ellipsize="marquee" android:id="@id/mail_home_button_unread" android:background="@drawable/btn_email_left_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/mail_home_text_unread" />
+            <Button android:textSize="13.0sp" android:textColor="@color/text_color" android:id="@id/mail_home_button_recv_all" android:background="@drawable/btn_email_middle_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/mail_home_text_recv_all" />
+            <Button android:textSize="13.0sp" android:textColor="@color/text_color" android:id="@id/mail_home_button_sended" android:background="@drawable/btn_email_middle_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/mail_home_text_sended" />
+            <Button android:textSize="13.0sp" android:textColor="@color/text_color" android:id="@id/mail_home_button_system" android:background="@drawable/btn_email_right_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:layout_marginTop="1.0dip" android:layout_marginBottom="1.0dip" android:text="@string/mail_home_text_system" />
+        </LinearLayout>
+    </LinearLayout>
+    <ListView android:id="@id/mail_home_list" android:fadingEdge="none" android:layout_width="fill_parent" android:layout_height="fill_parent" android:divider="@drawable/list_divider" android:layout_weight="1.0" />
+</LinearLayout>

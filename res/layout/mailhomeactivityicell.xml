@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="74.0dip"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView android:gravity="fill_vertical" android:id="@id/mail_home_cell_image" android:background="?android:windowBackground" android:paddingTop="4.0dip" android:paddingBottom="4.0dip" android:layout_width="wrap_content" android:layout_height="fill_parent" android:scaleType="fitXY" />
+    <LinearLayout android:layout_gravity="center_vertical" android:orientation="vertical" android:paddingLeft="16.0dip" android:paddingRight="16.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1.0">
+        <TextView android:textAppearance="?android:textAppearanceMedium" android:textStyle="bold" android:textColor="#ff101010" android:ellipsize="marquee" android:id="@id/mail_home_cell_text0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="Display name" />
+        <TextView android:textColor="#ff676767" android:ellipsize="marquee" android:id="@id/mail_home_cell_text1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="Status" />
+    </LinearLayout>
+</LinearLayout>

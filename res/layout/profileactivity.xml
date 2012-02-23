@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView android:textColor="@android:color/white" android:gravity="left|center" android:id="@id/profile_activity_title" android:background="@drawable/title_background" android:paddingLeft="14.0dip" android:paddingTop="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" />
+    <ScrollView android:id="@id/profile_scroller" android:fadingEdge="none" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <TableLayout android:layout_width="fill_parent" android:layout_height="wrap_content"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+                <TableRow>
+                    <ImageView android:id="@id/profile_head_image" android:background="?android:windowBackground" android:layout_width="70.0dip" android:layout_height="94.0dip" android:layout_marginLeft="14.0dip" android:layout_marginTop="11.0dip" android:layout_marginRight="6.0dip" android:layout_marginBottom="8.0dip" android:src="@drawable/default_portrait" android:scaleType="centerInside" />
+                    <TableLayout android:background="@drawable/custom_corner" android:layout_width="218.0dip" android:layout_height="wrap_content" android:layout_marginTop="14.0dip" android:layout_marginRight="14.0dip" android:layout_marginBottom="10.0dip"
+                      xmlns:android="http://schemas.android.com/apk/res/android">
+                        <TableRow>
+                            <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_0" android:background="@drawable/bg_table_first_row_corner" android:paddingLeft="8.0dip" android:paddingTop="4.0dip" android:paddingBottom="4.0dip" android:layout_width="216.0dip" android:layout_height="wrap_content" android:layout_margin="1.0dip" android:text="@string/profile_text_info_0" />
+                        </TableRow>
+                        <TableRow>
+                            <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_1" android:background="@android:color/white" android:paddingLeft="8.0dip" android:paddingTop="4.0dip" android:layout_width="216.0dip" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:layout_marginRight="1.0dip" android:text="@string/profile_text_info_1" />
+                        </TableRow>
+                        <TableRow>
+                            <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_2" android:background="@android:color/white" android:paddingLeft="8.0dip" android:paddingBottom="4.0dip" android:layout_width="216.0dip" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:layout_marginRight="1.0dip" android:text="@string/profile_text_info_2" />
+                        </TableRow>
+                        <TableRow>
+                            <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_2_2" android:background="@drawable/bg_table_last_row_corner" android:paddingLeft="8.0dip" android:paddingTop="4.0dip" android:paddingBottom="4.0dip" android:layout_width="216.0dip" android:layout_height="wrap_content" android:layout_margin="1.0dip" android:text="@string/profile_text_info_2_2" />
+                        </TableRow>
+                    </TableLayout>
+                </TableRow>
+            </TableLayout>
+            <Gallery android:id="@id/profile_gallery" android:background="@drawable/bg_profile_gallery" android:paddingTop="22.0dip" android:paddingBottom="18.0dip" android:fadingEdge="none" android:layout_width="fill_parent" android:layout_height="wrap_content" android:spacing="6.0dip" />
+            <LinearLayout android:gravity="center_horizontal" android:id="@id/profile_layout_0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="20.0dip" android:layout_marginTop="18.0dip" android:layout_marginRight="20.0dip" android:layout_marginBottom="18.0dip"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+                <Button android:textSize="16.0sp" android:id="@id/profile_button_match_ok" android:background="@drawable/btn_profile_match_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                <Button android:textSize="16.0sp" android:id="@id/profile_button_mail" android:background="@drawable/btn_profile_mail_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" />
+                <Button android:textSize="16.0sp" android:id="@id/profile_button_recommend" android:background="@drawable/btn_share" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" />
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:id="@id/profile_table_1" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:textSize="16.0sp" android:id="@id/profile_text_info_7" android:background="@drawable/bg_quick_reply" android:paddingLeft="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_7" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_8" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_margin="14.0dip" android:text="@string/profile_text_info_8" />
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:id="@id/profile_table_2" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:textSize="16.0sp" android:id="@id/profile_text_info_3" android:background="@drawable/bg_quick_reply" android:paddingLeft="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_3" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_4" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginTop="14.0dip" android:text="@string/profile_text_info_4" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_5" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/profile_text_info_5" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_6" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/profile_text_info_6" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_17" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginBottom="14.0dip" android:text="@string/profile_text_info_17" />
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:textSize="16.0sp" android:id="@id/profile_text_info_9" android:background="@drawable/bg_quick_reply" android:paddingLeft="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_9" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_10" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginTop="14.0dip" android:text="@string/profile_text_info_10" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_11" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/profile_text_info_11" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_12" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/profile_text_info_12" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_13" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/profile_text_info_13" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_14" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/profile_text_info_14" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_15" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:text="@string/profile_text_info_15" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_16" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="14.0dip" android:layout_marginBottom="14.0dip" android:text="@string/profile_text_info_16" />
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TextView android:textSize="16.0sp" android:id="@id/profile_text_info_18" android:background="@drawable/bg_quick_reply" android:paddingLeft="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_18" />
+                <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_18_0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_margin="14.0dip" />
+            </LinearLayout>
+            <TextView android:textSize="16.0sp" android:id="@id/profile_text_info_19" android:background="@drawable/bg_quick_reply" android:paddingLeft="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_19" />
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="14.0dip">
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_23" android:background="@android:color/white" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:text="@string/profile_text_info_23" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_23_0" android:background="@android:color/white" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_24" android:background="@android:color/white" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_24" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_24_0" android:background="@android:color/white" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_21" android:background="@android:color/white" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:text="@string/profile_text_info_21" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_21_0" android:background="@drawable/bg_table_first_row_right_corner" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_25" android:background="@android:color/white" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:text="@string/profile_text_info_25" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_25_0" android:background="@android:color/white" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_26" android:background="@drawable/bg_table_last_row_left_corner" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_26" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_26_0" android:background="@android:color/white" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_22" android:background="@android:color/white" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_22" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_22_0" android:background="@android:color/white" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_27" android:background="@android:color/white" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" android:text="@string/profile_text_info_27" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_27_0" android:background="@drawable/bg_table_last_row_right_corner" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_20" android:background="@drawable/bg_table_first_row_left_corner" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_20" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_20_0" android:background="@android:color/white" android:paddingLeft="2.0dip" android:paddingRight="2.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="1.0dip" />
+                </LinearLayout>
+            </LinearLayout>
+            <TextView android:textSize="16.0sp" android:id="@id/profile_text_info_28" android:background="@drawable/bg_quick_reply" android:paddingLeft="14.0dip" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/profile_text_info_28" />
+            <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_margin="14.0dip">
+                <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_29" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_29" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_29_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_30" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_30" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_30_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_31" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_31" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_31_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_32" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_32" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_32_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_33" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_33" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_33_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_34" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_34" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_34_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_35" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_35" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_35_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_36" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_36" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_36_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_37" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_37" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_37_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_38" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_38" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_38_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_39" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_39" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_39_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_40" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_40" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_40_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_41" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_41" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_41_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_42" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_42" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_42_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_43" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_43" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_43_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_44" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_44" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_44_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_45" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_45" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_45_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_46" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_46" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_46_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_47" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_47" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_47_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_48" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_48" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_48_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_49" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_49" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_49_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_50" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_50" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_50_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_51" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_51" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_51_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_52" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_52" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_52_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_53" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/profile_text_info_53" />
+                    <TextView android:textSize="14.0sp" android:id="@id/profile_text_info_53_0" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

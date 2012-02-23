@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="@drawable/icon_settings" android:id="@id/item_match_set_selection" android:title="@string/menu_item_selection" />
+    <item android:icon="@drawable/icon_mail_to" android:id="@id/item_match_mail_to" android:title="@string/menu_item_mail_to" />
+    <item android:icon="@drawable/icon_refresh" android:id="@id/item_match_refresh" android:title="@string/menu_item_refresh" />
+</menu>

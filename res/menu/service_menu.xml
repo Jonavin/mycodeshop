@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:icon="@drawable/icon_refresh" android:id="@id/item_service_refresh" android:title="@string/menu_item_refresh" />
+    <item android:icon="@drawable/icon_service_home" android:id="@id/item_service_home" android:title="@string/menu_item_service_home" />
+</menu>

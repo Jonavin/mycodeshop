@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button android:textColor="@color/text_color" android:layout_gravity="center_horizontal" android:id="@id/btn_recommend_by_email" android:background="@drawable/btn_negative_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="7.0dip" android:text="@string/recommend_type_email" />
+    <Button android:textColor="@color/text_color" android:layout_gravity="center_horizontal" android:id="@id/btn_recommend_by_sms" android:background="@drawable/btn_negative_selector" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_margin="7.0dip" android:text="@string/recommend_type_sms" />
+</LinearLayout>

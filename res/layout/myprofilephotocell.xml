@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableLayout android:id="@id/myprofile_photo_cell_table_0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:stretchColumns="1"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableRow>
+        <TableLayout android:id="@id/myprofile_photo_cell_table_1" android:layout_width="fill_parent" android:layout_height="wrap_content" android:stretchColumns="1"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+            <TableRow>
+                <TextView android:textSize="22.0px" android:id="@id/myprofile_photo_cell_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/myprofile_photo_privacy_title" />
+            </TableRow>
+            <TableRow>
+                <TextView android:textSize="10.0px" android:gravity="right" android:id="@id/myprofile_photo_cell_subscription" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            </TableRow>
+        </TableLayout>
+        <TextView android:textSize="16.0px" android:gravity="right" android:id="@id/myprofile_photo_cell_detail" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <ImageView android:id="@id/myprofile_photo_cell_image" android:background="@drawable/custom_background_frame" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/btn_arrow_selector" android:scaleType="fitXY" />
+    </TableRow>
+</TableLayout>

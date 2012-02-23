@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout android:orientation="horizontal" android:background="@drawable/bg_list_item_selector" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableLayout android:id="@id/search_result_table_0" android:layout_width="fill_parent" android:layout_height="wrap_content" android:stretchColumns="3"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+        <TableRow>
+            <FrameLayout android:gravity="center_horizontal" android:orientation="vertical" android:padding="8.0sp" android:layout_width="wrap_content" android:layout_height="wrap_content"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+                <ImageView android:id="@id/search_result_cell_head_image" android:layout_width="70.0dip" android:layout_height="94.0dip" android:scaleType="fitXY" />
+                <TextView android:gravity="center_horizontal" android:layout_gravity="bottom|center" android:id="@id/search_result_cell_service_type" android:background="@drawable/bg_text_bottom_corner" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="service type" />
+            </FrameLayout>
+            <TableLayout android:id="@id/search_result_table_1" android:layout_width="fill_parent" android:layout_height="wrap_content"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+                <TableRow>
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="16.0sp" android:ellipsize="end" android:id="@id/search_result_cell_text0" android:layout_width="110.0dip" android:layout_height="wrap_content" android:layout_marginTop="4.0dip" android:text="@string/search_result_cell_text0" android:singleLine="true" />
+                </TableRow>
+                <TableRow>
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="14.0sp" android:textColor="@color/light_gray" android:ellipsize="marquee" android:id="@id/search_result_cell_text1" android:layout_width="110.0dip" android:layout_height="wrap_content" android:text="@string/search_result_cell_text1" />
+                </TableRow>
+                <TableRow>
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="14.0sp" android:textColor="@color/light_gray" android:ellipsize="marquee" android:id="@id/search_result_cell_text2" android:layout_width="110.0dip" android:layout_height="wrap_content" android:text="@string/search_result_cell_text2" />
+                </TableRow>
+                <TableRow>
+                    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                        <ImageView android:layout_gravity="center_vertical" android:id="@id/search_result_cell_online_image" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="3.0dip" android:src="@drawable/icon_online" />
+                        <TextView android:textAppearance="?android:textAppearanceMedium" android:textSize="14.0sp" android:textColor="@color/light_gray" android:ellipsize="marquee" android:id="@id/search_result_cell_text3" android:layout_width="110.0dip" android:layout_height="wrap_content" android:text="@string/search_result_cell_text3" />
+                    </LinearLayout>
+                </TableRow>
+            </TableLayout>
+            <Button android:layout_gravity="center_vertical" android:id="@id/search_result_cell_match_button" android:background="@drawable/btn_search_result_match_selector" android:focusable="false" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

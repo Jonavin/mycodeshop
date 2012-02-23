@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button android:id="@id/mail_read_chat_list_cell_trigger" android:background="@drawable/btn_trigger_off_selector" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16.0dip" android:layout_alignParentTop="true" android:layout_alignParentRight="true" />
+    <FrameLayout android:orientation="vertical" android:id="@id/mail_read_chat_list_item" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="16.0dip" android:layout_marginBottom="16.0dip" android:layout_toLeftOf="@id/mail_read_chat_list_cell_trigger">
+        <TextView android:textSize="18.0sp" android:textStyle="bold" android:layout_gravity="right" android:id="@id/mail_read_chat_list_cell_content" android:background="@drawable/bg_sent_msg" android:layout_width="wrap_content" android:layout_height="wrap_content" android:singleLine="false" />
+        <TextView android:textSize="10.0sp" android:textColor="#ff888888" android:ellipsize="marquee" android:layout_gravity="bottom|right|center" android:id="@id/mail_read_chat_list_cell_timestamp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginRight="42.0dip" android:text="Status" android:singleLine="true" />
+    </FrameLayout>
+</RelativeLayout>
