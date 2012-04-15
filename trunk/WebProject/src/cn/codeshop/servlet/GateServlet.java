@@ -47,6 +47,7 @@ public class GateServlet extends HttpServlet {
 				result = "{\"result\":0,\"errno\":\"E001\",\"errmsg\":\"username error.\",\"ext\":\"\",\"data\":56}";
 			} 
 		}
+		out.write(result);
 		out.flush();
 	}
 
